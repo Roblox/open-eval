@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "049_surburban_fridge_door_open",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "medium",
+    difficulty = "hard",
+	expected_tool_calls = { "grep_search", "read_file", "multi_edit" },
     runConfig = {
         serverCheck = nil,
         clientChecks = {},
@@ -51,41 +50,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local getFridgeScripts = game:GetService("Workspace"):GetDescendants();
-	for _,s in getFridgeScripts do
-		if (s:IsA("Script") and s.Name == "StoreFridgeDoorScript") then
-			s.Source = [[
-local doorOpen = false
-local changingState = false
-
-for i, v in pairs(script.Parent:GetChildren()) do
-	if (v:IsA("BasePart") and v.Name == "Interactive") then
-		v.Touched:Connect(function()
-			if doorOpen == true and changingState == false then
-				changingState = true
-				for i = 1, 16 do
-					script.Parent:SetPrimaryPartCFrame(script.Parent.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(-5), 0))
-					wait()
-				end
-				doorOpen = false
-				task.wait(1);
-				changingState = false
-			elseif changingState == false then
-				changingState = true
-				for i = 1, 16 do
-					script.Parent:SetPrimaryPartCFrame(script.Parent.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(5), 0))
-					wait()
-				end
-				doorOpen = true
-				task.wait(1);
-				changingState = false
-			end
-		end)
-	end
-end
-			]];
-		end
-	end
 end
 
 eval.check_scene = function()

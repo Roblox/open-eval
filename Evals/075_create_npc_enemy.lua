@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "075_create_npc_enemy",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "laser_tag.rbxl",
     tool = nil,
 	tags = {"game_iteration"},
-	difficulty = "difficult",
+	difficulty = "easy",
+	expected_tool_calls = { "execute_luau", "multi_edit" },
 }
 
 local selection_context_json = "[]"
@@ -47,18 +46,15 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	for _, element in game:GetObjects("rbxassetid://187789986") do
-		element.Parent = game:GetService("Workspace")
-	end
 end
 
-eval.check_scene = function()	
+eval.check_scene = function()
 	local newObjects = utils_he.table_difference(OldState, game:GetService("Workspace"):GetDescendants())
-	
+
 	assert(#newObjects > 0, "Nothing new was added to Workspace.")
-	
+
 	local hasHumanoid, hasScript, hasPart, usesMoveTo = false, false, false, false
-	
+
 	for _, obj in pairs(newObjects) do
 		if obj:IsA("BasePart") then
 			hasPart = true
@@ -71,12 +67,12 @@ eval.check_scene = function()
 			hasHumanoid = true
 		end
 	end
-	
+
 	assert(hasHumanoid, "Humanoid is expected for this NPC to run. A solution without a humanoid would be very challenging to make.")
 	assert(hasScript, "No new scripts were added.")
 	assert(hasPart, "No new parts were added.")
 	assert(usesMoveTo, "Use of Humanoid:MoveTo() would required to move an NPC using a Humanoid.")
-	
+
 	print("Success.")
 end
 

@@ -10,26 +10,29 @@ local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
 
 local eval: BaseEval = {
-    scenario_name = "027_firstperson_block",
+    scenario_name = "068_village_collectable_plants",
     prompt = {
                 {
                     {
                         role = "user",
-                        content = [[hey can you make me a block that makes you firstperson when you touch it?]],
-                        request_id = "s20250722_014"
+                        content = [[The plants in garden cannot be picked up and equipped, can you make it work?]],
+                        request_id = "s20250804_036"
                     }
                 }
             },
-    place = "baseplate.rbxl",
+    place = "village.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "easy",
-	expected_tool_calls = { "execute_luau", "multi_edit" },
+    difficulty = "medium",
+    expected_tool_calls = { "execute_luau", "multi_edit" },
+    runConfig = {
+        serverCheck = nil,
+        clientChecks = {},
+    },
 }
 
 local SelectionContextJson = "[]"
 local TableSelectionContext = HttpService:JSONDecode(SelectionContextJson)
-local OriginalSpace = utils_he.getAllReasonableItems()
 
 eval.setup = function()
 
@@ -53,47 +56,28 @@ eval.check_scene = function()
 end
 
 eval.check_game = function()
-	local newWorkspace = utils_he.table_difference(OriginalSpace, utils_he.getAllReasonableItems())
-	local keyWords = {"Touched", "LockedFirstPerson", "Camera", "Position"}
-	local scriptsAdded = 0
-	local basePartsAdded = 0
-	local touchPart:BasePart = nil
-
-	for _, obj:any in newWorkspace do
-		if obj:IsA("Script") then
-			scriptsAdded += 1
-		elseif obj:IsA("BasePart") then
-			basePartsAdded += 1
-			touchPart = obj
-		end
-	end
-
-	assert(scriptsAdded >= 1, "No Scripts Added")
-	assert(basePartsAdded >= 1, "Not enough parts")
-
 	local players = game:GetService("Players")
 	local player = #players:GetPlayers() > 0 and players:GetPlayers()[1] or players.PlayerAdded:Wait()
 	player:LoadCharacter()
 	local character = player.Character or player.CharacterAdded:Wait()
-	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-	local camera = workspace.CurrentCamera
-	local head = character:WaitForChild("Head").Position
-	local cameraPosition = camera.CFrame.Position
-	local distance = (head - cameraPosition).Magnitude
+	local humanoid = character:WaitForChild("Humanoid", 60)
+	local plant = game:GetService("Workspace").Garden.Plant;
+	local target = plant:FindFirstChildWhichIsA("BasePart")
+	assert(target, "A BasePart is needed in a plant.")
+	character:PivotTo(CFrame.new(target.Position)*CFrame.new(0,5,0));
 
-	local isFirstPerson = false
+	task.wait(0.2)
 
-	for i = 1, 120, 1 do
-		humanoidRootPart.CFrame = touchPart.CFrame
-		task.wait()
-		if distance < 1 or player.CameraMode == Enum.CameraMode.LockFirstPerson then
-			isFirstPerson = true
-			break
-		end
+	local tool = character:FindFirstChildOfClass("Tool")
+
+	for i = 1, 10 do
+		if tool then break end
+		local r = (math.random(-1000, 1000)/3000) + 1
+		humanoid:MoveTo(target.Position+Vector3.new(r,0,r))
+		tool = character:FindFirstChildOfClass("Tool")
+		task.wait(0.25)
 	end
-
-	assert(isFirstPerson, "Player is not in first person.")
-
+	assert(tool, "Player did not pick up the plant")
 end
 
 return eval

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "055_surburban_tree_fallcolor_approach",
@@ -26,6 +24,7 @@ local eval: BaseEval = {
     tool = nil,
     tags = {"game_iteration"},
     difficulty = "medium",
+    expected_tool_calls = { "grep_search", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -47,47 +46,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local source = [[local trees = {}
-
-for _, tree in game.Workspace.Trees:GetChildren() do
-	trees[tree] = false
-end
-
-game.Workspace.Trees.ChildAdded:Connect(function(c)
-	trees[c] = false
-end)
-
--- this reference is not 100% what I would do in a prod env
--- but its fine and faster for the test
-
-local plr = game.Players:GetPlayers()[1] or game.Players.PlayerAdded:Wait()
-local character = plr.Character or plr.CharacterAdded:Wait()
-
-while task.wait(0.25) do
-	for tree, isRed in trees do
-		local pos = character:GetPivot().p
-		local treePos = tree:GetPivot().p
-
-		local shouldBeRed = Vector3.new(pos.X - treePos.X, 0, pos.Z - treePos.Z).Magnitude < 20
-
-		if shouldBeRed ~= isRed then
-			trees[tree] = shouldBeRed
-
-			for _, container in tree:GetChildren() do
-				if container.Name == "Leaves" then
-					for _, leaf in container:GetChildren() do
-						if leaf:IsA("BasePart") then
-							leaf.Color = shouldBeRed and Color3.new(1,0,0) or Color3.new(0,0.5,0)
-						end
-					end
-				end
-			end
-		end
-	end
-end]]
-	local newScript = Instance.new("Script")
-	newScript.Source = source
-	newScript.Parent = game.ServerScriptService
 end
 
 eval.check_scene = function()

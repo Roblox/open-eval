@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "053_surburban_billboard_change_decal",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
+	expected_tool_calls = { "execute_luau", "multi_edit" },
     difficulty = "medium",
 }
 
@@ -32,7 +31,7 @@ local SelectionContextJson = "[]"
 local TableSelectionContext = HttpService:JSONDecode(SelectionContextJson)
 
 eval.setup = function()
-    
+
     local assetIds = {16932675066, 7013881916, 3730712412}
     local workspace = game:GetService('Workspace')
 
@@ -40,7 +39,7 @@ eval.setup = function()
     for i, assetId in ipairs(assetIds) do
         local url = 'rbxassetid://' .. assetId
         local decal = game:GetObjects(url)[1]
-    
+
         if decal and decal:IsA('Decal') then
             decal.Name = 'ad' .. i
             decal.Parent = billboard
@@ -61,31 +60,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local workspace = game:GetService('Workspace')
-	local billboard = workspace:FindFirstChild('Billboard')
-	
-	local newScript = Instance.new("Script")
-	newScript.Source = [[local ads = {}
-local billboards = {}
-
-for _, v in script.Parent:GetDescendants() do
-	if v:IsA("Decal") then
-		if v.Name:find("ad") then
-			table.insert(ads, v.Texture)
-		elseif v.Name == "Decal" then
-			table.insert(billboards, v)
-		end
-	end
-end
-
-local i = 1
-while task.wait(2) do
-	for _, v in billboards do
-		v.Texture = ads[i]
-		i = ((i + 1) % #ads) + 1
-	end
-end]]
-	newScript.Parent = billboard
 end
 
 eval.check_scene = function()
@@ -94,36 +68,36 @@ end
 eval.check_game = function()
 	local ads = {}
 	local billboards = {}
-	
+
 	local workspace = game:GetService('Workspace')
 	local billboard = workspace:FindFirstChild('Billboard')
 
 	for _, v in billboard:GetDescendants() do
 		if v:IsA("Decal") then
 			ads[v.Texture] = true
-			
+
 			if v.Name == "Decal" then
 				billboards[v] = v.Texture
 			end
 		end
 	end
-	
+
 	local successes = 0
-	
+
 	for i = 1, 10 do
 		if successes >= 3 then break end
-		
+
 		for obj, lastTexture in billboards do
 			if ads[obj.Texture] and lastTexture ~= obj.Texture then
 				billboards[obj] = obj.Texture
 				successes += 1
 			end
 		end
-		
+
 		task.wait(1)
 	end
 	assert(successes >= 3, "Ads are not cycling with ones found in the ads decals.")
-	
+
 	print("Success")
 end
 

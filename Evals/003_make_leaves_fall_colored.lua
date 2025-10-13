@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "003_make_leaves_fall_colored",
@@ -24,7 +22,8 @@ local eval: BaseEval = {
     place = "village.rbxl",
     tool = nil,
 	tags = {"code_runner"},
-	difficulty = "easy",
+	difficulty = "medium",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -45,19 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local workspace = game:GetService("Workspace")
-
-	for _, tree in ipairs(workspace.Trees:GetChildren()) do
-		for i, leaf in ipairs(tree:GetChildren()) do -- It seems this place is set up so all leaves are just within tree and named "Leaves"
-			if leaf.Name:lower() == "leaves" and leaf:IsA("BasePart") then
-				leaf.Color = Color3.fromHSV(
-					(i%2==0 and math.random(0,55) or math.random(345,360))/360,
-					math.random(40, 100)/100,
-					math.random(40, 100)/100
-				)
-			end
-		end
-	end
 end
 
 eval.check_scene = function()

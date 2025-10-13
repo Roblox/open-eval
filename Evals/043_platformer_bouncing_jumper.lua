@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "043_platformer_bouncing_jumper",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
 	place = "platformer.rbxl",
 	tool = nil,
 	tags = {"game_iteration"},
-	difficulty = "difficult",
+	difficulty = "medium",
+	expected_tool_calls = { "execute_luau", "multi_edit" },
 	runConfig = {
 		serverCheck = nil,
 		clientChecks = {},
@@ -51,41 +50,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local getJumps = game:GetService("Workspace").LevelArt.Level.Jumps:GetChildren();
-	local prefab = game:GetService("ServerStorage")["Template Library"]["Gameplay Objects"].OneJump;
-	--Create trigger for more reliable touch events
-	local trigger = Instance.new("Part");
-	trigger.Name = "Trigger";
-	trigger.CanCollide = false;
-	trigger.Anchored = true;
-	trigger.Transparency = 1;
-	local bounceScript = Instance.new("Script");
-	bounceScript.Source = [[
-local debounce = false;
-script.Parent["Trigger"].Touched:Connect(function(part)
-	if (not debounce and part.Parent and part.Parent:FindFirstChild("Humanoid")) then
-		debounce = true;
-		part.Parent.Humanoid.Jump = true;
-		task.wait(0.1);
-		debounce = false;
-	end
-end);
-		]];
-	for _,jump in getJumps do
-		if (jump.Name == "OneJump") then
-			local newTrigger = trigger:Clone()
-			newTrigger.Parent = jump;
-			newTrigger.Size = jump["Top_SJ"].Size;
-			newTrigger.CFrame = jump["Top_SJ"].CFrame*CFrame.new(0,1,0);
-			bounceScript:Clone().Parent = jump;
-			jump.Name = "BounceJump";
-		end
-	end
-	trigger.Parent = prefab;
-	trigger.Size = prefab["Top_SJ"].Size;
-	trigger.CFrame = prefab["Top_SJ"].CFrame*CFrame.new(0,1,0);
-	bounceScript.Parent = prefab;
-	prefab.Name = "BounceJump";
 end
 
 eval.check_scene = function()

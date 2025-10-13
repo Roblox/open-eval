@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "041_platformer_make_checkpoints",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "platformer.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "easy",
+    expected_tool_calls = { "grep_search", "read_file", "multi_edit" },
     runConfig = {
         serverCheck = nil,
         clientChecks = {},
@@ -45,39 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local selectionService = game:GetService("Selection")
-	local selectedInstances = selectionService:Get()
-	local target = selectedInstances[1]
-
-	local respawnScript = Instance.new("Script")
-	respawnScript.Source = [[local Players = game:GetService("Players")
-
-local playersAtCheckpoint:{Players} = {}
-
-local model = script.Parent
-local spawnPosition = model.Top_SJ.Position
-
-local function Ontouched(otherPart:BasePart)
-	local model = otherPart:FindFirstAncestorWhichIsA("Model")
-	local player = Players:GetPlayerFromCharacter(model)
-	if (not player) then return end
-	if (table.find(playersAtCheckpoint,player)) then return end
-
-	player.CharacterAdded:Connect(function(character: Model)
-		local humanoid:Humanoid = character:FindFirstChild("Humanoid") or character:WaitForChild("Humanoid")
-		local spawnFrame = CFrame.new(spawnPosition) + Vector3.yAxis * 5
-		character:PivotTo(spawnFrame)
-	end)
-
-	table.insert(playersAtCheckpoint,player)
-end
-
-
-model.Base_SJ.Touched:Connect(Ontouched)
-model.Top_SJ.Touched:Connect(Ontouched)]]
-
-	respawnScript.Name = "RespawnScript"
-	respawnScript.Parent = target
 end
 
 eval.check_scene = function()

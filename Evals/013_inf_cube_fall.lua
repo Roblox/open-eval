@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "013_inf_cube_fall",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     tool = nil,
 	tags = {"game_iteration"},
 	difficulty = "easy",
+	expected_tool_calls = { "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -45,23 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local script = Instance.new("Script")
-	script.Name = "InfCubeFall"
-	script.Source = [[
-	local workspace = game:GetService("Workspace")
-	local startTime = tick()
-	local duration = 10 -- Run for 10 seconds
-
-	while tick() - startTime < duration do
-		local p = Instance.new("Part")
-		p.Size = Vector3.new(1,1,1)
-		p.CFrame = CFrame.new()
-		p.Parent = workspace
-		task.wait(1)
-	end
-	]]
-	script.Parent = game:GetService("ServerScriptService")
-	script.Enabled = true
 end
 
 eval.check_scene = function()

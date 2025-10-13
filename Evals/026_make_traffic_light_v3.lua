@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "026_make_traffic_light_v3",
@@ -25,13 +23,14 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "hard",
+	expected_tool_calls = { "grep_search", "read_file", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
 local TableSelectionContext = HttpService:JSONDecode(SelectionContextJson)
 
-local preWorkspace 
+local preWorkspace
 
 eval.setup = function()
 	preWorkspace = game:GetService("Workspace"):GetDescendants()
@@ -40,8 +39,8 @@ eval.setup = function()
     for _, instance in ipairs(game:GetDescendants()) do
         if instance:IsA('Script') then
             if (
-                instance.Name == 'TrafficLightScript' or 
-                instance.Name == 'TrafficLightTimeScript' or 
+                instance.Name == 'TrafficLightScript' or
+                instance.Name == 'TrafficLightTimeScript' or
                 instance.Name == 'TimeScript'
             ) then
                 instance:Destroy()
@@ -63,102 +62,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-
-	local newScript = Instance.new("Script")
-	newScript.Source = [[
-	-- modify light objects to light color part
-	local northLight = {
-		red = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].RedLight.SpotLight,
-		yellow = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].OrangeLight.SpotLight,
-		green = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].GreenLight.SpotLight
-	}
-	local southLight = {
-		red = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].RedLight.SpotLight,
-		yellow = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].OrangeLight.SpotLight,
-		green = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].GreenLight.SpotLight
-	}
-	local eastLight = {
-		red = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].RedLight.SpotLight,
-		yellow = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].OrangeLight.SpotLight,
-		green = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].GreenLight.SpotLight
-	}
-	local westLight = {
-		red = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].RedLight.SpotLight,
-		yellow = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].OrangeLight.SpotLight,
-		green = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsB["Traffic Signal"].GreenLight.SpotLight
-	}
-
-	while true do
-		-- east / west cycle
-		eastLight.green.Enabled = true
-		eastLight.yellow.Enabled = false
-		eastLight.red.Enabled = false
-
-		westLight.green.Enabled = true
-		westLight.yellow.Enabled = false
-		westLight.red.Enabled = false
-
-		northLight.green.Enabled = false
-		northLight.yellow.Enabled = false
-		northLight.red.Enabled = true
-
-		southLight.green.Enabled = false
-		southLight.yellow.Enabled = false
-		southLight.red.Enabled = true
-
-		task.wait(6)
-		-- e/w yellow
-		eastLight.green.Enabled = false
-		eastLight.yellow.Enabled = true
-		eastLight.red.Enabled = false
-
-		westLight.green.Enabled = false
-		westLight.yellow.Enabled = true
-		westLight.red.Enabled = false
-
-		task.wait(2)
-		-- red all
-		eastLight.green.Enabled = false
-		eastLight.yellow.Enabled = false
-		eastLight.red.Enabled = true
-
-		westLight.green.Enabled = false
-		westLight.yellow.Enabled = false
-		westLight.red.Enabled = true
-
-		task.wait(1)
-		-- n/s green
-		northLight.green.Enabled = true
-		northLight.yellow.Enabled = false
-		northLight.red.Enabled = false
-
-		southLight.green.Enabled = true
-		southLight.yellow.Enabled = false
-		southLight.red.Enabled = false
-
-		task.wait(6)
-		-- n/s yellow
-		northLight.green.Enabled = false
-		northLight.yellow.Enabled = true
-		northLight.red.Enabled = false
-
-		southLight.green.Enabled = false
-		southLight.yellow.Enabled = true
-		southLight.red.Enabled = false
-		task.wait(2)
-
-		northLight.green.Enabled = false
-		northLight.yellow.Enabled = false
-		northLight.red.Enabled = true
-
-		southLight.green.Enabled = false
-		southLight.yellow.Enabled = false
-		southLight.red.Enabled = true
-		task.wait(1)
-
-	end
-	]]
-	newScript.Parent = game:GetService("Workspace")
 end
 
 eval.check_scene = function()
@@ -179,7 +82,7 @@ eval.check_game = function()
 		end
 	end
 	assert(scriptCreated, "No Script created")
-	assert(lightString, "No light signal in the script")	
+	assert(lightString, "No light signal in the script")
 
 
 	local red = game:GetService("Workspace").RoadSections["Regulated 4-Way Intersection"].IntersectionTrafficSignals.TrafficLightsA["Traffic Signal"].RedLight.SpotLight

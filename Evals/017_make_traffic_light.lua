@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "017_make_traffic_light",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "baseplate.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "medium",
+    difficulty = "hard",
+	expected_tool_calls = { "execute_luau", "grep_search", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -66,70 +65,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local trafficLight = workspace:WaitForChild("TrafficLight")
-	local lightScript = Instance.new("Script", trafficLight)
-	lightScript.Source = [[
-local trafficLight = script.Parent
-local greenLight = trafficLight:WaitForChild("GreenLight")
-local yellowLight = trafficLight:WaitForChild("YellowLight")
-local redLight = trafficLight:WaitForChild("RedLight")
-
-local greenLightPointLight = greenLight:WaitForChild("PointLight")
-local yellowLightPointLight = yellowLight:WaitForChild("PointLight")
-local redLightPointLight = redLight:WaitForChild("PointLight")
-
-greenLight.Transparency = .8
-
-
-while true do
-	greenLightPointLight.Enabled = true
-	yellowLightPointLight.Enabled = false
-	redLightPointLight.Enabled = false
-
-
-	greenLight.Material = Enum.Material.Neon
-	yellowLight.Material = Enum.Material.Glass
-	redLight.Material = Enum.Material.Glass
-
-	greenLight.Transparency = 0
-	yellowLight.Transparency = 0.8
-	redLight.Transparency = 0.8
-
-
-	wait(0.5) -- shorter time gap to speed up the test
-	greenLightPointLight.Enabled = false
-	yellowLightPointLight.Enabled = false
-	redLightPointLight.Enabled = true
-
-	greenLight.Material = Enum.Material.Glass
-	yellowLight.Material = Enum.Material.Glass
-	redLight.Material = Enum.Material.Neon
-
-	greenLight.Transparency = 0.8
-	yellowLight.Transparency = 0.8
-	redLight.Transparency = 0
-
-	wait(0.5)
-	greenLightPointLight.Enabled = false
-	yellowLightPointLight.Enabled = true
-	redLightPointLight.Enabled = false
-
-	greenLight.Material = Enum.Material.Glass
-	yellowLight.Material = Enum.Material.Neon
-	redLight.Material = Enum.Material.Glass
-
-	greenLight.Transparency = 0.8
-	yellowLight.Transparency = 0
-	redLight.Transparency = 0.8
-
-	wait(0.5)
-
-end
-
-]]
-	lightScript.Enabled = false
-	task.wait(0.5)
-	lightScript.Enabled = true
 end
 
 eval.check_scene = function()

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	prompt = {
@@ -25,7 +23,8 @@ local eval: BaseEval = {
 	place = "platformer.rbxl",
 	tool = nil,
 	tags = {"game_iteration"},
-	difficulty = "medium",
+	difficulty = "easy",
+	expected_tool_calls = { "execute_luau", "multi_edit" },
 }
 
 local selection_context_json = "[]"
@@ -48,56 +47,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local radius = 10 -- distance from center
-	local partSize = Vector3.new(2 * radius * math.sin(math.pi / 6), 1, 2)
-	local center = Vector3.new(0, 10, 0)
-	local rainbow = {
-		BrickColor.new("Bright red"),
-		BrickColor.new("Bright orange"),
-		BrickColor.new("Bright yellow"),
-		BrickColor.new("Bright green"),
-		BrickColor.new("Bright blue"),
-		BrickColor.new("Bright violet")
-	}
-
-	local model = Instance.new("Model")
-	model.Name = "Hexagon"
-	model.Parent = workspace
-
-	for i = 0, 5 do
-		local angle = math.rad(i * 60)
-
-		local x = math.cos(angle) * radius
-		local z = math.sin(angle) * radius
-		local pos = center + Vector3.new(x, 0, z)
-
-		local part = Instance.new("Part")
-		part.Size = partSize
-		part.Anchored = true
-		part.Position = pos
-		part.BrickColor = rainbow[i + 1]
-		part.Name = "HexPart" .. tostring(i + 1)
-		part.Parent = model
-
-		part.CFrame = CFrame.new(pos, center) * CFrame.new(0, 0, -partSize.Z / 2)
-
-		if i == 0 then --red
-			local killScript = Instance.new("Script")
-			killScript.Source = [[
-				script.Parent.Touched:Connect(function(hit)
-					local humanoid = hit.Parent:FindFirstChild("Humanoid")
-					if humanoid then
-						humanoid.Health = 0
-					end
-				end)
-			]]
-			-- killScript.RunContext = Enum.RunContext.Client
-			killScript.Parent = part
-		end
-
-
-	end
-
 end
 
 eval.check_scene = function()
@@ -148,7 +97,7 @@ eval.check_game = function()
 			if diff > 180 then
 				diff = 360 - diff -- circular
 			end
-			
+
 			local diffRange = i > 2 and 30 or 15 -- because orange is in a spot within the color wheel, it makes this akward for a few colors
 
 			if diff <= diffRange then

@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "008_spawn_as_r6",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     tool = nil,
 	tags = {"code_runner"},
 	difficulty = "easy",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -45,11 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local starterPlayer = game:GetService("StarterPlayer")
-	local starterCharacter = starterPlayer:FindFirstChild("StarterCharacter")
-	local humanoid = starterCharacter:FindFirstChild("Humanoid")
-
-	humanoid.RigType = Enum.HumanoidRigType.R6
 end
 
 eval.check_scene = function()

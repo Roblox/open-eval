@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "033_count_coins",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "platformer.rbxl",
     tool = nil,
     tags = {"code_runner"},
-    difficulty = "easy",
+    difficulty = "medium",
+    expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -65,11 +64,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-    local CoinsFolder = Workspace.Gameplay.CoinPickups
-    
-	for i,coin in CoinsFolder:GetChildren() do
-		if (coin:IsA("PVInstance")) then GeneratePart(coin:GetPivot().Position)  else GeneratePart(GenerationPosition) end
-	end
 end
 
 eval.check_scene = function()

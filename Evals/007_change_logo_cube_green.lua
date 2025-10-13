@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "007_change_logo_cube_green",
@@ -24,7 +22,8 @@ local eval: BaseEval = {
     place = "platformer.rbxl",
     tool = nil,
 	tags = {"code_runner"},
-	difficulty = "difficult",
+	difficulty = "medium",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -45,9 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local workspace = game:GetService("Workspace")
-	local target = workspace:WaitForChild("LevelArt"):WaitForChild("SkyMeshes"):WaitForChild("RoBlonk"):WaitForChild("Roblonx")
-	target.Color = Color3.new(0,1,0)
 end
 
 eval.check_scene = function()

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "050_surburban_gaspump_explode",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "medium",
+	expected_tool_calls = { "execute_luau", "grep_search", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -62,38 +61,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local gasStation = workspace:WaitForChild('Gas Station')
-
-	for _, obj in ipairs(gasStation:GetDescendants()) do
-		if obj:IsA('Model') and obj.Name == 'GasPump' then
-
-			for _, child in ipairs(obj:GetChildren()) do
-				if child.Name == "NearArea" then
-					local newScript = Instance.new("Script",child)
-					newScript.Source = [[
-                    print("Explosion script loaded")
-					local nearArea = script.Parent
-					local debounce = false
-
-					nearArea.Touched:Connect(function(hit)
-						if debounce then return end
-						debounce = true
-						--if player touches
-						if hit.Parent:FindFirstChild("Humanoid") then
-							local explosion = Instance.new("Explosion", nearArea)
-							explosion.Visible = true
-							explosion.Position = nearArea.Position
-							task.wait(1)
-						end
-						task.wait(0.01)
-						debounce = false
-					end)
-					]]
-					newScript.Enabled = true
-				end
-			end
-		end
-	end
 end
 
 eval.check_scene = function()

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "073_homestore_dynamic_pricing",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "ugc_homestore.rbxl",
     tool = nil,
 	tags = {"code_runner"},
-	difficulty = "medium",
+	difficulty = "easy",
+	expected_tool_calls = { "grep_search", "read_file", "multi_edit" },
 }
 
 local selection_context_json = "[]"
@@ -81,36 +80,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local itemTileModule = game:GetService("ReplicatedStorage"):FindFirstChild("UI")
-	if itemTileModule then
-		itemTileModule = itemTileModule:FindFirstChild("Components")
-		if itemTileModule then
-			itemTileModule = itemTileModule:FindFirstChild("ItemTile")
-		end
-	end
-
-	if itemTileModule and itemTileModule:IsA("ModuleScript") then
-		-- Hardcode item price display
-		local originalSource = itemTileModule.Source
-		local oldLine = "local price = 100"
-		local newLine = "local price = itemDetails.LowestPrice or itemDetails.Price"
-
-		if string.find(originalSource, oldLine) then
-			local modifiedSource = string.gsub(originalSource, oldLine, newLine)
-
-			itemTileModule.Source = modifiedSource
-			
-			-- The require function caches the result. Cloning the module to avoid.
-			itemTileModule:Clone().Parent = itemTileModule.Parent
-			itemTileModule:Destroy()
-			
-			print("Attempted to set ItemTile ModuleScript source. Please check the script editor.")
-		else
-			warn("Original line not found in ItemTile ModuleScript. No source modification performed.")
-		end
-	else
-		warn("Could not find ModuleScript at ReplicatedStorage.UI.Components.ItemTile.")
-	end
 end
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "074_red_grass_sway",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     tool = nil,
 	tags = {"code_runner"},
 	difficulty = "medium",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local selection_context_json = "[]"
@@ -48,10 +47,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	print([[Terrain.Decoration is required for evaluation, however it is not scriptable.
-			Since we are solely evaluating with code provided in reference, please manually check that it is on.]])
-	Terrain:SetMaterialColor(Enum.Material.Grass, Color3.new(1,0,0))
-	Workspace.GlobalWind = Vector3.new(10, 0, 0)
 end
 
 eval.check_scene = function()

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "052_surburban_trampoline_bounce",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "easy",
+	expected_tool_calls = { "execute_luau", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -60,75 +59,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local newScriptSource = [[local trampoline = script.Parent
-local jumpForce = trampoline.Parent.Configurations.JumpForce
-local activeCharacters = {} -- debounce table
-
--- Helper function to find character from any hit part (handles accessories)
-local function getCharacterFromHit(hit)
-	local current = hit.Parent
-	while current and current ~= game do
-		if current:FindFirstChildOfClass("Humanoid") then
-			return current
-		end
-		current = current.Parent
-	end
-	return nil
-end
-
-function bind(hit)
-	local character = getCharacterFromHit(hit)
-	if not character or activeCharacters[character] then return end
-
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	local root = character.PrimaryPart
-	if not humanoid or not root then return end
-
-	activeCharacters[character] = true
-
-	while character and character.Parent do
-		task.wait(0.1)
-		-- airborn
-		if humanoid.FloorMaterial == Enum.Material.Air then continue end
-
-		-- distance check ignoring Y
-		local distXZ = (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(trampoline.Position.X, 0, trampoline.Position.Z)).Magnitude
-
-		if distXZ <= trampoline.Size.Z / 2 then
-			humanoid.Jump = true
-			root.Velocity = Vector3.new(root.Velocity.X, jumpForce.Value, root.Velocity.Z)
-		else
-			break
-		end
-	end
-
-	activeCharacters[character] = nil
-end
-
-local db = false
-trampoline.Touched:Connect(function(...)
-	if db then return end
-	db = true
-
-	bind(...)
-
-	task.wait()
-	db = false
-end)]]
-
-	local trampoline = workspace:WaitForChild('Yard', 5):WaitForChild('Trampoline', 5):WaitForChild('Trampoline', 5)
-	assert(trampoline, "Trampoline is required for evaluation, please check the place file.")
-
-	for _, child in ipairs(trampoline:GetDescendants()) do
-		if child:IsA('LuaSourceContainer') then
-			child:Destroy()
-		end
-	end
-
-	local newScript = Instance.new("Script")
-	newScript.Source = newScriptSource
-	newScript.Parent = trampoline
-    newScript.Enabled = true
 end
 
 eval.check_scene = function()

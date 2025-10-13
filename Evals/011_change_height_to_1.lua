@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "011_change_height_to_1",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     tool = nil,
 	tags = {"game_iteration"},
 	difficulty = "medium",
+	expected_tool_calls = { "grep_search", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -45,34 +44,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-    -- Scale to 1 stud tall
-    local script = Instance.new("Script")
-    script.Name = "ShrinkPlayerHeight"
-	script.Source = [[
-	local Players = game:GetService("Players")
-
-    local function shrinkCharacter(character)
-        if character then
-            local _, size = character:GetBoundingBox()
-            character:ScaleTo(1/size.Y)
-        end
-    end
-
-    local function onPlayerAdded(player)
-        player.CharacterAdded:Connect(shrinkCharacter)
-
-        if player.Character then
-            shrinkCharacter(player.Character)
-        end
-    end
-
-    Players.PlayerAdded:Connect(onPlayerAdded)
-    for _, player in Players:GetPlayers() do
-        onPlayerAdded(player)
-    end
-	]]
-	script.Parent = game:GetService("ServerScriptService")
-	script.Enabled = true
 end
 
 eval.check_scene = function()

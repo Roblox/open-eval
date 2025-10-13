@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "002_emit_white_smoke",
@@ -24,7 +22,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
 	tags = {"code_runner"},
-	difficulty = "easy",
+	difficulty = "medium",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -59,12 +58,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	-- In the placefile, there is already smoke object in chimney.
-	for _, smoke in ipairs(game:GetService("Workspace"):GetDescendants()) do
-		if smoke:IsA("ParticleEmitter") and smoke.Parent.Name == "Smoke" then
-			smoke.Color = ColorSequence.new(Color3.new(1,1,1))
-		end
-	end
 end
 
 eval.check_scene = function()

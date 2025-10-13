@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "001_make_cars_faster",
@@ -25,6 +23,7 @@ local eval: BaseEval = {
     tool = nil,
 	tags = {"code_runner"},
 	difficulty = "easy",
+	expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -53,12 +52,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local target = game:GetService("ReplicatedStorage"):FindFirstChild("Car"):FindFirstChild("Engine")
-	target:SetAttribute("_speed", target:GetAttribute("_speed") * 2)
-	target:SetAttribute("acceleration", target:GetAttribute("acceleration") * 2)
-	target:SetAttribute("forwardMaxSpeed", target:GetAttribute("forwardMaxSpeed") * 2)
-	target:SetAttribute("maxSpeedTorque", target:GetAttribute("maxSpeedTorque") * 2)
-	target:SetAttribute("reverseMaxSpeed", target:GetAttribute("reverseMaxSpeed") * 2)
 end
 
 eval.check_scene = function()

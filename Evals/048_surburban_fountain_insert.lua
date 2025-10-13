@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "048_surburban_fountain_insert",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"code_runner"},
-    difficulty = "easy",
+    difficulty = "medium",
+    expected_tool_calls = { "execute_luau" },
     runConfig = {
         serverCheck = nil,
         clientChecks = {},
@@ -56,9 +55,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local fountain = game:GetService("Workspace")[" water fountain spawn"].Fountain;
-	fountain:ScaleTo(0.6);
-	fountain:PivotTo(CFrame.new(19.6, 6.596, 194.7));
 end
 
 eval.check_scene = function()

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "054_surburban_equip_flashlight",
@@ -26,6 +24,7 @@ local eval: BaseEval = {
     tool = nil,
     tags = {"game_iteration"},
     difficulty = "medium",
+    expected_tool_calls = { "execute_luau" },
 }
 
 local SelectionContextJson = "[]"
@@ -47,9 +46,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	-- this is the flashlight given by code within the game
-	local _, flashlight = next(game:GetObjects("rbxassetid://116040770"))
-	flashlight.Parent = game.StarterPack
 end
 
 eval.check_scene = function()

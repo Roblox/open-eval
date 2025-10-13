@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "059_surburban_merrygoround_max_velocity",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "surburban.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "medium",
+    difficulty = "easy",
+	expected_tool_calls = { "grep_search", "read_file", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -84,87 +83,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local merry = game:GetService("Workspace").Playground.MerryGoRound
-	for _, obj in merry:GetDescendants() do
-		if obj:IsA("LuaSourceContainer") then
-			obj:Destroy()
-		end
-	end
-	local newScript = Instance.new("Script")
-	newScript.Source = [[local velocity = script.Parent.Platform.BodyAngularVelocity
-local occupants = {}
-local seats = {}
-
------ SETUP -----
-
-for i, v in pairs(script.Parent:GetChildren()) do
-	if v.ClassName == "Seat" then
-		table.insert(seats, v)
-	end
-end
-
------ SEATS -----
-
-for _, v in pairs(seats) do
-	v.ChildAdded:Connect(function(obj) -- added
-		if obj.Name == "SeatWeld" then
-			local player = ""
-			if player then
-				table.insert(occupants, obj.Part1.Parent)
-			end
-		end
-	end)
-	v.ChildRemoved:Connect(function(obj) -- removed
-		if obj.Name == "SeatWeld" then
-			local player = ""
-			if player then
-				for i, occupant in pairs(occupants) do
-					if occupant == player then
-						table.remove(occupants, i)
-					end
-				end
-			end
-		end
-	end)
-end
-
-
------ FLING -----
-
-function flingPlayer(player)
-	player.Humanoid.PlatformStand = true
-	wait(math.random(1,2))
-	player.Humanoid.PlatformStand = false
-end
-
------ RUN MERRY-GO-ROUND -----
-
-while wait() do
-	if #occupants > 0 then
-		velocity.AngularVelocity = Vector3.new(
-			velocity.AngularVelocity.X, 
-			math.clamp(velocity.AngularVelocity.Y + 0.2, 0, 1),
-			velocity.AngularVelocity.Z
-		)
-		wait(0.1)
-		for i = 1, #occupants do -- finding occupants to possibly fling :P
-			if occupants[i] then
-				local randNum = 1
-				if math.ceil(occupants[i].HumanoidRootPart.Velocity.Magnitude) > 1 then
-					randNum = math.random(1, math.ceil(occupants[i].HumanoidRootPart.Velocity.Magnitude))
-				end
-				if randNum >= 40 then
-					flingPlayer(occupants[i])
-					table.remove(occupants, i)
-				end
-			end
-		end
-	elseif velocity.AngularVelocity.Y > 0 then -- slowing down
-		velocity.AngularVelocity = velocity.AngularVelocity - Vector3.new(0, math.min(0.3, velocity.AngularVelocity.Y), 0)
-	end
-end]]
-	newScript.Parent = merry
-
 end
 
 eval.check_scene = function()

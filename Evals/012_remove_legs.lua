@@ -7,8 +7,6 @@ local types = require(LoadedCode.EvalUtils.types)
 local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
 	scenario_name = "012_remove_legs",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
 	place = "baseplate.rbxl",
 	tool = nil,
 	tags = {"game_iteration"},
-	difficulty = "easy",
+	difficulty = "medium",
+	expected_tool_calls = { "grep_search", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
@@ -46,42 +45,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local players = game:GetService("Players")
-	local player = if #players:GetPlayers() > 0 then players:GetPlayers()[1] else players.PlayerAdded:Wait()
-	player:LoadCharacter()
-	local char = player.Character or player.CharacterAdded:Wait()
-
-	for _, v in ipairs(char:GetChildren()) do
-		if v:IsA("BasePart") and (string.lower(v.Name):find("leg") or string.lower(v.Name):find("foot")) then
-			v:Destroy()
-		end
-	end
-
-	local script = Instance.new("Script")
-    script.Name = "RemoveLegs"
-	script.Source = [[
-	local Players = game:GetService("Players")
-
-    local function removeLegs(character)
-        if character then
-            for _, v in ipairs(character:GetChildren()) do
-                if v:IsA("BasePart") and (string.lower(v.Name):find("leg") or string.lower(v.Name):find("foot")) then
-                    v:Destroy()
-                end
-            end
-        end
-    end
-
-	Players.PlayerAdded:Connect(function(player)
-		player.CharacterAdded:Connect(removeLegs)
-
-		if player.Character then
-			removeLegs(player.Character)
-		end
-	end)
-	]]
-	script.Parent = game:GetService("ServerScriptService")
-	script.Enabled = true
 end
 
 eval.check_scene = function()

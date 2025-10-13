@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "019_secret_door_puzzle",
@@ -25,14 +23,15 @@ local eval: BaseEval = {
     place = "baseplate.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "medium",
+	expected_tool_calls = { "execute_luau", "multi_edit" },
 }
 
 local SelectionContextJson = "[]"
 local TableSelectionContext = HttpService:JSONDecode(SelectionContextJson)
 
 eval.setup = function()
-    
+
     --Insert a door with script to open
     local id = 8222709011
     local url = 'rbxassetid://' .. id
@@ -71,77 +70,6 @@ eval.setup = function()
 end
 
 eval.reference = function()
-	local door = game:GetService("Workspace")["SecretDoor"].Door;
-	door.Base.ProximityPrompt.Enabled = false;
-	local bindableEvent = Instance.new("BindableEvent");
-	bindableEvent.Name = "ButtonPressEvent";
-	bindableEvent.Parent = door;
-	local buttonNameList = {"BluePart","GreenPart","RedPart","YellowPart"};
-	for _,name in buttonNameList do
-		local button = game:GetService("Workspace")[name];
-		local buttonScript = Instance.new("Script");
-		buttonScript.Source = [[
-			local button = script.Parent;
-			local door = game:GetService("Workspace"):WaitForChild("SecretDoor");
-			local debounce = false;
-			
-			function touch(part)
-				if (not debounce and part.Parent:FindFirstChild("Humanoid")) then
-					debounce = true;
-					door.Door["ButtonPressEvent"]:Fire(button);
-					task.wait(0.5);
-					debounce = false;
-				end
-			end
-			button.Touched:Connect(touch);
-		]];
-		buttonScript.Parent = button;
-		button.Anchored = true;
-	end
-	--Remove prompt trigger from door
-	door.Script.Source = [[
-		local TweenService = game:GetService("TweenService")
-
-		local hinge = script.Parent.Doorframe.Hinge
-
-		local goalOpen = {}
-		goalOpen.CFrame = hinge.CFrame * CFrame.Angles(0, math.rad(90), 0)
-
-		local goalClose = {}
-		goalClose.CFrame = hinge.CFrame * CFrame.Angles(0, 0, 0)
-
-		local tweenInfo = TweenInfo.new(1)
-		local tweenOpen = TweenService:Create(hinge, tweenInfo, goalOpen)
-		local tweenClose = TweenService:Create(hinge, tweenInfo, goalClose)
-		
-		local bindableEvent = script.Parent["ButtonPressEvent"];
-		local buttonOrderList = {"RedPart", "BluePart", "GreenPart", "YellowPart"};
-		local buttonSet = {};
-		for _,name in buttonOrderList do
-			buttonSet[name] = true;
-		end
-		
-		local buttonAddedQueue = {};
-		local lastAdded = nil;
-		
-		bindableEvent.Event:Connect(function(button)
-			if (buttonSet[button.Name] and lastAdded ~= button) then
-				table.insert(buttonAddedQueue, button.Name);
-				lastAdded = button;
-				for i,name in buttonAddedQueue do
-					if (name ~= buttonOrderList[i]) then
-						tweenClose:Play();
-						buttonAddedQueue = {};
-						lastAdded = nil;
-						return;
-					end
-				end
-				if (#buttonAddedQueue >= #buttonOrderList) then
-					tweenOpen:Play();
-				end
-			end
-		end);
-	]];
 end
 
 eval.check_scene = function()
@@ -154,7 +82,7 @@ eval.check_game = function()
     local character = player.Character or player.CharacterAdded:Wait();
 	local door = game:GetService("Workspace")["SecretDoor"].Door;
 	local hingeRotOriginal = door.Doorframe.Hinge.Orientation;
-	
+
 	--Check correct order
 	local buttonNameList = {"RedPart", "BluePart", "GreenPart", "YellowPart"};
 	task.wait(0.5);
@@ -165,7 +93,7 @@ eval.check_game = function()
 	end
 	task.wait(0.1);
 	assert(door.Doorframe.Hinge.Orientation ~= hingeRotOriginal, "failure");
-	
+
 	--Check wrong order
 	buttonNameList = {"GreenPart", "BluePart", "RedPart", "YellowPart"};
 	task.wait(0.5);

@@ -8,8 +8,6 @@ local HttpService = game:GetService("HttpService")
 type BaseEval = types.BaseEval
 local utils_he = require(LoadedCode.EvalUtils.utils_he)
 
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
 
 local eval: BaseEval = {
     scenario_name = "035_laser_tag_regenerate_health",
@@ -25,7 +23,8 @@ local eval: BaseEval = {
     place = "laser_tag.rbxl",
     tool = nil,
     tags = {"game_iteration"},
-    difficulty = "difficult",
+    difficulty = "medium",
+	expected_tool_calls = { "grep_search", "multi_edit" },
     runConfig = {
         serverCheck = nil,
         clientChecks = {},
@@ -73,34 +72,6 @@ end);]];
 end
 
 eval.reference = function()
-	local starterScripts = game:GetService("StarterPlayer").StarterCharacterScripts;
-	local healthScript = Instance.new("Script");
-	healthScript.Name = "Health";
-	healthScript.Source = [[
-		local runService = game:GetService("RunService");
-		local humanoid = script.Parent:WaitForChild("Humanoid");
-
-		local healStartTimer = 2;
-		local healTimer = 0;
-
-		function update(deltaTime)
-			if (humanoid.Health < humanoid.MaxHealth) then
-				healStartTimer = healStartTimer > 0 and healStartTimer - deltaTime or 0;
-			else
-				healStartTimer = 2;
-				healTimer = 0;
-			end
-			if (healStartTimer <= 0) then
-				healTimer = healTimer > 0 and healTimer - deltaTime or 0;
-				if (healTimer <= 0) then
-					humanoid.Health += 10;
-					healTimer = 1;
-				end
-			end
-		end
-		runService.Heartbeat:Connect(update);
-	]];
-	healthScript.Parent = starterScripts;
 end
 
 eval.check_scene = function()
