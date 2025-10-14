@@ -1,1 +1,221 @@
-# open-eval
+# OpenEval
+
+OpenEval is an evaluation framework for testing LLMs on Roblox game development tasks. This repository contains open-sourced evaluation scripts and tools for running automated assessments in the Roblox Studio environment.
+
+## Prerequisites
+
+### 1. Roblox Account
+You'll need a Roblox account. If you don't have one, create a free account at [roblox.com](https://www.roblox.com).
+
+### 2. OpenCloud API Key
+To interact with the OpenEval API, you need to create an OpenCloud API key:
+
+1. Navigate to [Creator Hub](https://create.roblox.com) and log in
+2. Go to **All tools** (or **OpenCloud**) > **API Keys**
+3. Create a new key with:
+   - **Access Permissions**: `studio-evaluations`
+   - **Operations**: `create`
+   - Set an expiration date (recommended: 90 days)
+4. Save and copy the generated key
+
+## Quick Start
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Roblox/open-eval.git
+cd open-eval
+```
+
+### 2. Install uv (one-time setup)
+The project uses `uv` for dependency management. Install dependencies:
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Or with Homebrew
+brew install uv
+
+# Or with pip
+pip install uv
+```
+
+### 3. Run Your Evaluation
+```bash
+# Using API key stored in .env
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
+
+# Or, pass in Open Eval API key manually
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key your_api_key
+```
+
+## Usage
+
+### Running Multiple Evaluations
+
+```bash
+# Run all evaluations
+uv run invoke_eval.py --files "Evals/*.lua"
+
+# Run specific pattern
+uv run invoke_eval.py --files "Evals/0*_*.lua"
+
+# Run with concurrency limit
+uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
+```
+
+### Using Custom LLM Models
+
+```bash
+# With custom model
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --llm-name "claude" \
+  --llm-model-version "claude-4-sonnet-20250514" \
+  --llm-api-key $CLAUDE_API_KEY
+
+# With OpenAI
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --llm-name "openai" \
+  --llm-model-version "gpt-4o-2024-08-06" \
+  --llm-api-key $OPENAI_API_KEY
+```
+
+### Reference Mode (Debugging for Eval Contribution)
+```bash
+# Skip LLM and use reference code for debugging
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --use-reference-mode
+```
+
+## Command Line Options
+
+```bash
+uv run invoke_eval.py [OPTIONS]
+
+Options:
+  --api-key TEXT             Open Cloud API key studio-evaluation
+  --llm-name TEXT            Name of provider, e.g. claude | gemini | openai
+  --llm-api-key TEXT         LLM API key
+  --llm-model-version TEXT   LLM model version, e.g. claude-4-sonnet-20250514
+  --llm-url TEXT             LLM endpoint URL. Not yet supported, please put a placeholder string here.
+  --max-concurrent INTEGER   Maximum concurrent evaluations
+  --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
+  --use-reference-mode       Use reference mode for evaluation. This is used for eval development and contribution, not for LLM assessment.
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **API Key Not Found**: Ensure your API key is set in the `.env` file or passed via `--api-key`
+2. **Permission Denied**: Verify your Roblox account has proper permissions
+3. **Timeout Errors**: Evaluations have a 10-minute timeout
+4. **File Not Found**: Check file paths and ensure evaluation files exist
+
+## API Reference
+
+### Base URL
+```
+https://apis.roblox.com/open-eval-api/v1
+```
+
+### Endpoints
+
+#### Submit Evaluation
+```bash
+curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
+  --header 'Content-Type: application/json' \
+  --header "x-api-key: $OPEN_EVAL_API_KEY" \
+  --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
+    name: "make_cars_faster",
+    description: "Evaluation on make cars faster",
+    input_script: $script
+  }')"
+```
+
+#### Check Status
+```bash
+curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
+  --header "x-api-key: $OPEN_EVAL_API_KEY"
+```
+
+### Job Status Values
+- `QUEUED`: Job is waiting to be processed
+- `PENDING`: Job is being processed  
+- `COMPLETED`: Job finished successfully
+- `FAILED`: Job failed
+
+### Custom LLM Configuration
+
+#### With provider and model version
+```bash
+curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
+  --header 'Content-Type: application/json' \
+  --header "x-api-key: $OPEN_EVAL_API_KEY" \
+  --data "$(jq -n --rawfile script src/Evals/e_44_create_part.lua '{
+    name: "create_part",
+    description: "Evaluation on create part",
+    input_script: $script,
+    custom_llm_info: {
+      name: "provider-name", // ← Provider only, claude | gemini | openai
+      api_key: "your-provider-api-key",
+      model_version: "model-version", // ← see model versions below
+      url: "dummy_url_not_effective",
+    }
+  }')"
+```
+
+
+## Evaluation Structure
+
+Each evaluation file follows this structure:
+
+```lua
+local eval: BaseEval = {
+    scenario_name = "001_make_cars_faster", -- Name of the eval
+    prompt = {
+        {
+            {
+                role = "user",
+                content = "Make the cars of this game 2x faster", -- User prompt
+            }
+        }
+    },
+    place = "racing.rbxl", --Name of placefile used. Currently only supports Roblox templates.
+}
+
+-- Setup necessary changes to the placefile before evaluation
+eval.setup = function()
+    -- Create necessary set up to placefile, including selection
+end
+
+-- Reference function (optional, used when running evals with use-reference-mode)
+eval.reference = function()
+    -- Expected behavior implementation
+end
+
+-- Validation function
+eval.check_scene = function()
+    -- Checks for edit mode
+end
+
+eval.check_game = function()
+    -- Checks for play mode
+end
+
+return eval
+```
+
+## Contributing
+
+This repository contains open-source evaluation scripts. To contribute:
+
+1. Fork the repository
+2. Create evaluation scripts following the established format
+3. Test your evaluations thoroughly
+4. Submit a pull request with clear documentation
+
+## License
+
+This project is part of Roblox's open-source initiative. Please refer to the repository's license file for details.
+
+## Support
+- Contact the Roblox team for API access and permissions

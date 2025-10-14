@@ -115,10 +115,10 @@ async def main():
         "--use-reference-mode", action="store_true", help="Use reference mode for evaluation"
     )
     parser.add_argument(
-        "--llm-name", type=str, help="Custom LLM name (e.g., 'gpt-4', 'claude-3')"
+        "--llm-name", type=str, help="Custom LLM name (e.g., 'gpt-4', 'claude-4')"
     )
     parser.add_argument(
-        "--llm-url", type=str, help="Custom LLM endpoint URL"
+        "--llm-url", type=str, default="dummy_url", help="Custom LLM endpoint URL"
     )
     parser.add_argument(
         "--llm-api-key", type=str, help="Custom LLM API key"
