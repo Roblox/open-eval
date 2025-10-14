@@ -153,11 +153,11 @@ async def main():
 
     # Construct custom LLM info if provided
     custom_llm_info = None
-    if args.llm_name or args.llm_url or args.llm_api_key or args.llm_model_version:
+    if args.llm_name or args.llm_api_key or args.llm_model_version:
         custom_llm_info = {}
         if args.llm_name:
             custom_llm_info["name"] = args.llm_name
-        if args.llm_url:
+        if args.llm_url and args.llm_url != "dummy_url":
             custom_llm_info["url"] = args.llm_url
         if args.llm_api_key:
             custom_llm_info["api_key"] = args.llm_api_key

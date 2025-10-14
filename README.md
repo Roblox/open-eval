@@ -48,7 +48,44 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key your_api_key
 ```
 
-## Usage
+It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
+```bash
+Evals/001_make_cars_faster.lua                    : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/c4106612-0968-4480-90ba-e707d3bbe491
+```
+
+It takes a few minutes for eval to run and gather results. Once completed, it will return whether the eval run is successful or not.
+```bash
+Evals/001_make_cars_faster.lua                    : Success
+Success rate: 100.00% (1/1)  
+```
+
+## Understanding Eval Result
+After eval completed, a result object will be returned as a part of http response. 
+
+The eval is considered as a pass only if all checks are passed.
+```
+"results": [
+      {
+        "mode": "[EDIT]",
+        "result": {
+          "passes": 1,
+          "fails": 0,
+          "checks": 1,
+          "warning": "",
+          "error": "",
+          "interruptions": []
+        }
+      }
+    ],
+```
+### Eval result fields
+- `passes`: Number of checks passed.
+- `fails`: Number of checks failed.
+- `checks`: Total number of checks. Equals to passes + fails.
+- `warnings`: Number of warnings received when running the eval.
+- `error`: Number of errors received when running the eval.
+
+## More Usage
 
 ### Running Multiple Evaluations
 
