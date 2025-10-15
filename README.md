@@ -16,7 +16,7 @@ To interact with the OpenEval API, you need to create an OpenCloud API key:
    - **Access Permissions**: `studio-evaluations`
    - **Operations**: `create`
    - Set an expiration date (recommended: 90 days)
-4. Save and copy the generated key
+4. Save and copy the generated key, which will be used as <your_api_key> in following commands.
 
 ## Quick Start
 
@@ -60,7 +60,7 @@ Success rate: 100.00% (1/1)
 ```
 
 ## Understanding Eval Result
-After eval completed, a result object will be returned as a part of http response. 
+After eval completed, a result object will be returned as a part of http response. It is accessible through `https://apis.roblox.com/open-eval-api/v1/eval-records/{jobId}`
 
 The eval is considered as a pass only if all checks are passed.
 ```
@@ -103,7 +103,13 @@ uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
 ### Using Custom LLM Models
 
 ```bash
-# With custom model
+# With Gemini
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --llm-name "gemini" \
+  --llm-model-version "gemini-2.5-flash-preview-09-2025" \
+  --llm-api-key $GEMINI_API_KEY
+
+# With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
@@ -194,11 +200,20 @@ curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
     custom_llm_info: {
       name: "provider-name", // ← Provider only, claude | gemini | openai
       api_key: "your-provider-api-key",
-      model_version: "model-version", // ← see model versions below
+      model_version: "model-version", // ← see example model versions below
       url: "dummy_url_not_effective",
     }
   }')"
 ```
+Example model-versions
+- For Gemini models (provider-name: “gemini”)
+    - gemini-2.5-pro
+    - gemini-2.5-flash-preview-09-2025
+- For Claude models (provider-name: “claude”)
+    - claude-4-sonnet-20250514
+    - claude-sonnet-4-5-20250929
+- For OpenAI models (provider-name: “openai”)
+    - gpt-4o-2024-08-06
 
 
 ## Evaluation Structure
