@@ -10,7 +10,7 @@ You'll need a Roblox account. If you don't have one, create a free account at [r
 ### 2. OpenCloud API Key
 To interact with the OpenEval API, you need to create an OpenCloud API key:
 
-1. Navigate to [Creator Hub](https://create.roblox.com) and log in
+1. Navigate to [Creator Hub](https://create.roblox.com) and log in. Make sure you are viewing as user, not group.
 2. Go to **All tools** (or **OpenCloud**) > **API Keys**
 3. Create a new key with:
    - **Access Permissions**: `studio-evaluations`
@@ -40,6 +40,9 @@ pip install uv
 ```
 
 ### 3. Run Your Evaluation
+You may save the API key generated in a file named `.env`, and name it `OPEN_EVAL_API_KEY`. See `.env.example` for a sample.
+Alternatively, you can pass in the API key directly.
+
 ```bash
 # Using API key stored in .env
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
@@ -53,7 +56,10 @@ It should show the status being "submitted" with a url, through which you can ch
 Evals/001_make_cars_faster.lua                    : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/c4106612-0968-4480-90ba-e707d3bbe491
 ```
 
-It takes a few minutes for eval to run and gather results. Once completed, it will return whether the eval run is successful or not.
+It is common for an eval to take 3-4 minutes to run and gather results. The script polls result every 10 seconds and print a status update every 30 seconds.
+
+Once completed, it will return whether the eval run is successful or not. The default timeout is 10 minutes.
+
 ```bash
 Evals/001_make_cars_faster.lua                    : Success
 Success rate: 100.00% (1/1)  
@@ -122,12 +128,6 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --llm-api-key $OPENAI_API_KEY
 ```
 
-### Reference Mode (Debugging for Eval Contribution)
-```bash
-# Skip LLM and use reference code for debugging
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --use-reference-mode
-```
-
 ## Command Line Options
 
 ```bash
@@ -148,10 +148,11 @@ Options:
 
 ### Common Issues
 
-1. **API Key Not Found**: Ensure your API key is set in the `.env` file or passed via `--api-key`
-2. **Permission Denied**: Verify your Roblox account has proper permissions
-3. **Timeout Errors**: Evaluations have a 10-minute timeout
-4. **File Not Found**: Check file paths and ensure evaluation files exist
+1. **API Key Not Found**: Ensure your API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
+2. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
+3. **Timeout Errors**: Evaluations have a 10-minute timeout.
+4. **File Not Found**: Check file paths and ensure evaluation files exist.
+5. **SSL certificate verify failed**: Find the `Install Certificates.command` in finder and execute it. ([See details and other solutions](https://stackoverflow.com/questions/52805115/certificate-verify-failed-unable-to-get-local-issuer-certificate))
 
 ## API Reference
 
@@ -241,7 +242,7 @@ end
 
 -- Reference function (optional, used when running evals with use-reference-mode)
 eval.reference = function()
-    -- Expected behavior implementation
+    -- Expected behavior implementation. They are intentionally left blank in this set for the purpose of evaluation.
 end
 
 -- Validation function
