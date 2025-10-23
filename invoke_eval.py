@@ -61,9 +61,12 @@ async def eval(
 
     poll_url = f"{base_url}/eval-records/{job_id}"
     poll_interval = poll_interval  # seconds
+    last_print_time = 0
+    print_interval = 30  # seconds
 
     while True:
         await asyncio.sleep(poll_interval)
+        current_time = time.time()
         async with session.get(poll_url, headers=custom_headers) as response:
             if response.status == 200:
                 job_status_response = await response.json()
@@ -77,7 +80,15 @@ async def eval(
                 elif job_status == "FAILED":
                     logger.info(f"Job {job_id} for {file} Failed")
                     return f"Error"
-                elif job_status == "PENDING" or job_status == "QUEUED":
+                elif job_status == "QUEUED":
+                    if current_time - last_print_time >= print_interval:
+                        print(f"{file:<50}: Queued, awaiting processing...")
+                        last_print_time = current_time
+                    logger.info(f"Job {job_id} for {file} is queued. Waiting for processing...")
+                elif job_status == "PENDING":
+                    if current_time - last_print_time >= print_interval:
+                        print(f"{file:<50}: Eval running...")
+                        last_print_time = current_time
                     logger.info(f"Job {job_id} for {file} is pending. Waiting for completion...")
                 else:
                     raise Exception(f"Unexpected job status for {job_id}: {job_status}")
