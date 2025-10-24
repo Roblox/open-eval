@@ -272,3 +272,8 @@ This project is part of Roblox's open-source initiative. Please refer to the rep
 
 ## Support
 - Contact the Roblox team for API access and permissions
+
+## LLM Leaderboard
+
+The LLM Leaderboard summarizes benchmark results and progress for all evaluated Large Language Models in this repository.
+[LLM_LEADERBOARD.md](./LLM_LEADERBOARD.md)
