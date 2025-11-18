@@ -111,18 +111,24 @@ uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
 ```bash
 # With Gemini
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --api-key your_api_key \
+  --llm-url "dummy-url" \
   --llm-name "gemini" \
   --llm-model-version "gemini-2.5-flash-preview-09-2025" \
   --llm-api-key $GEMINI_API_KEY
 
 # With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --api-key your_api_key \
+  --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
   --llm-api-key $CLAUDE_API_KEY
 
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --api-key your_api_key \
+  --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-4o-2024-08-06" \
   --llm-api-key $OPENAI_API_KEY
