@@ -16,7 +16,7 @@ To interact with the OpenEval API, you need to create an OpenCloud API key:
    - **Access Permissions**: `studio-evaluations`
    - **Operations**: `create`
    - Set an expiration date (recommended: 90 days)
-4. Save and copy the generated key, which will be used as <your_api_key> in following commands.
+4. Save and copy the generated key, which will be used as <OPEN_EVAL_API_KEY> in following commands.
 
 ## Quick Start
 
@@ -48,7 +48,7 @@ Alternatively, you can pass in the API key directly.
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
 
 # Or, pass in Open Eval API key manually
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key your_api_key
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_EVAL_API_KEY
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
@@ -111,7 +111,7 @@ uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
 ```bash
 # With Gemini
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key your_api_key \
+  --api-key $OPEN_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "gemini" \
   --llm-model-version "gemini-2.5-flash-preview-09-2025" \
@@ -119,7 +119,7 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 
 # With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key your_api_key \
+  --api-key $OPEN_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
@@ -127,7 +127,7 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key your_api_key \
+  --api-key $OPEN_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-4o-2024-08-06" \
