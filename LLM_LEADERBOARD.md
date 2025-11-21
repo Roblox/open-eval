@@ -57,6 +57,14 @@
         <td>6.80%</td>
     </tr>
     <tr>
+        <td class="model-name">GPT 5.1</td> 
+        <td>40.54%</td>
+        <td>62.05%</td>
+        <td>40.43%</td>
+        <td>21.74%</td>
+        <td>4.70%</td>
+    </tr>
+    <tr>
         <td class="model-name">GLM 4.5</td>
         <td>51.49%</td>
         <td>68.24%</td>
