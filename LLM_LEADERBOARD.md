@@ -46,7 +46,7 @@
         <td>49.76%</td>
         <td>39.87%</td>
         <td>25.81%</td>
-        <td>1.03%</td>
+        <td><strong>1.03%</strong></td>
     </tr>
     <tr>
         <td class="model-name">Claude Haiku 4.5</td>
