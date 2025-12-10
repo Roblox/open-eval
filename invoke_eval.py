@@ -29,7 +29,8 @@ async def eval(
     api_key: str,
     delay: int = 0,
     use_reference_mode: bool = False,
-    custom_llm_info: dict = None
+    custom_llm_info: dict = None,
+    verbose_headers: bool = False
 ) -> str:
     await asyncio.sleep(delay)
     payload = {
@@ -47,7 +48,21 @@ async def eval(
     submit_url = f"{base_url}/eval"
 
     job_id = None
+    if verbose_headers:
+        print(f"\n{'='*60}")
+        print(f"[VERBOSE] POST {submit_url}")
+        print(f"[VERBOSE] Request Headers:")
+        for key, value in custom_headers.items():
+            # Mask API key for security
+            display_value = value[:8] + "..." if key.lower() == "x-api-key" and len(value) > 8 else value
+            print(f"  {key}: {display_value}")
     async with session.post(submit_url, json=payload, headers=custom_headers) as response:
+        if verbose_headers:
+            print(f"[VERBOSE] Response Status: {response.status}")
+            print(f"[VERBOSE] Response Headers:")
+            for key, value in response.headers.items():
+                print(f"  {key}: {value}")
+            print(f"{'='*60}\n")
         if response.status == 200:
             result = await response.json()
             job_id = result.get("job_id")
@@ -140,6 +155,9 @@ async def main():
     parser.add_argument(
         "--max-concurrent", type=int, default=None, help="Maximum number of concurrent evaluations (default: unlimited)"
     )
+    parser.add_argument(
+        "--verbose-headers", action="store_true", help="Output HTTP request and response headers for debugging"
+    )
     parser.add_argument("--files", type=str, nargs="+", help="List of lua files with evals (supports wildcards like *.lua or src/**/*.lua)")
     args = parser.parse_args()
     
@@ -186,7 +204,8 @@ async def main():
             async with semaphore:
                 return await eval(file, base_url, session, delay=index * 0.5, timeout=eval_timeout,
                                 api_key=api_key, use_reference_mode=args.use_reference_mode,
-                                poll_interval=poll_interval, custom_llm_info=custom_llm_info)
+                                poll_interval=poll_interval, custom_llm_info=custom_llm_info,
+                                verbose_headers=args.verbose_headers)
 
         tasks = [
             eval_with_semaphore(file, i)
