@@ -1,6 +1,6 @@
-# OpenEval
+# OpenGameEval
 
-OpenEval is an evaluation framework for testing LLMs on Roblox game development tasks. This repository contains open-sourced evaluation scripts and tools for running automated assessments in the Roblox Studio environment.
+OpenGameEval is an evaluation framework for testing LLMs on Roblox game development tasks. This repository contains open-sourced evaluation scripts and tools for running automated assessments in the Roblox Studio environment.
 
 ## Prerequisites
 
@@ -8,7 +8,7 @@ OpenEval is an evaluation framework for testing LLMs on Roblox game development 
 You'll need a Roblox account. If you don't have one, create a free account at [roblox.com](https://www.roblox.com).
 
 ### 2. OpenCloud API Key
-To interact with the OpenEval API, you need to create an OpenCloud API key:
+To interact with the OpenGameEval API, you need to create an OpenCloud API key:
 
 1. Navigate to [Creator Hub](https://create.roblox.com) and log in. Make sure you are viewing as user, not group.
 2. Go to **All tools** (or **OpenCloud**) > **API Keys**
@@ -16,14 +16,14 @@ To interact with the OpenEval API, you need to create an OpenCloud API key:
    - **Access Permissions**: `studio-evaluations`
    - **Operations**: `create`
    - Set an expiration date (recommended: 90 days)
-4. Save and copy the generated key, which will be used as <OPEN_EVAL_API_KEY> in following commands.
+4. Save and copy the generated key, which will be used as <OPEN_GAME_EVAL_API_KEY> in following commands.
 
 ## Quick Start
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Roblox/open-eval.git
-cd open-eval
+git clone https://github.com/Roblox/open-game-eval.git
+cd open-game-eval
 ```
 
 ### 2. Install uv (one-time setup)
@@ -47,7 +47,7 @@ Alternatively, you can pass in the API key directly.
 # Using API key stored in .env
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
 
-# Or, pass in Open Eval API key manually
+# Or, pass in OpenGameEval API key manually
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_EVAL_API_KEY
 ```
 
@@ -111,7 +111,7 @@ uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
 ```bash
 # With Gemini
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key $OPEN_EVAL_API_KEY \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "gemini" \
   --llm-model-version "gemini-2.5-flash-preview-09-2025" \
@@ -119,7 +119,7 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 
 # With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key $OPEN_EVAL_API_KEY \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
@@ -127,7 +127,7 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
-  --api-key $OPEN_EVAL_API_KEY \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-4o-2024-08-06" \
