@@ -41,12 +41,20 @@
         <td>4.00%</td>
     </tr>
     <tr>
+        <td class="model-name">Claude Opus 4.5</td>
+        <td>44.47%</td>
+        <td>56.60%</td>
+        <td>43.82%</td>
+        <td>35.44%</td>
+        <td><strong>0.98%</strong></td>
+    </tr>
+    <tr>
         <td class="model-name">Claude Sonnet 4.5</td>
         <td>38.51%</td>
         <td>49.76%</td>
         <td>39.87%</td>
         <td>25.81%</td>
-        <td><strong>1.03%</strong></td>
+        <td>1.03%</td>
     </tr>
     <tr>
         <td class="model-name">Claude Haiku 4.5</td>
