@@ -162,10 +162,10 @@ async def main():
     args = parser.parse_args()
     
     # Use environment variable as fallback if --api-key not provided
-    api_key = args.api_key or os.getenv("OPEN_EVAL_API_KEY", "")
+    api_key = args.api_key or os.getenv("OPEN_GAME_EVAL_API_KEY", "")
     
     if not api_key:
-        raise ValueError("API key is required. Provide --api-key or set OPEN_EVAL_API_KEY in .env file")
+        raise ValueError("API key is required. Provide --api-key or set OPEN_GAME_EVAL_API_KEY in .env file")
 
     expanded_files = expand_file_patterns(args.files)
     if not expanded_files:
