@@ -94,6 +94,7 @@ The eval is considered as a pass only if all checks are passed.
 ## More Usage
 
 ### Running Multiple Evaluations
+**⚠️ Please beware of rate limit when running multiple evals. See "Rate Limit" section for more informaiton.**
 
 ```bash
 # Run all evaluations
@@ -149,6 +150,25 @@ Options:
   --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
   --use-reference-mode       Use reference mode for evaluation. This is used for eval development and contribution, not for LLM assessment.
 ```
+
+## API Rate Limit
+To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
+
+### 1. Eval job creation
+Endpoint: `POST /open-eval-api/v1/eval`
+| Limit Type | Rate | Time Window |
+| :--- | :--- | :--- |
+| Per **API Key** | 50 requests | Per hour |
+| Per **API Key** | 100 requests | Per day |
+| Per **IP Address** | 100 requests | Per day |
+
+### 2. Polling job status
+Endpoint: `GET /open-eval-api/v1/eval-records/{jobId}`
+
+| Limit Type | Rate | Time Window |
+| :--- | :--- | :--- |
+| Per **API Key** | 60 requests | Per minute |
+| Per **IP Address** | 60 requests | Per minute |
 
 ## Troubleshooting
 
