@@ -40,7 +40,7 @@ pip install uv
 ```
 
 ### 3. Run Your Evaluation
-You may save the API key generated in a file named `.env`, and name it `OPEN_EVAL_API_KEY`. See `.env.example` for a sample.
+You may save the API key generated in a file named `.env`, and name it `OPEN_GAME_EVAL_API_KEY`. See `.env.example` for a sample.
 Alternatively, you can pass in the API key directly.
 
 ```bash
@@ -48,7 +48,7 @@ Alternatively, you can pass in the API key directly.
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
 
 # Or, pass in OpenGameEval API key manually
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_EVAL_API_KEY
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_GAME_EVAL_API_KEY
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
@@ -173,7 +173,7 @@ https://apis.roblox.com/open-eval-api/v1
 ```bash
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
-  --header "x-api-key: $OPEN_EVAL_API_KEY" \
+  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
   --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
     name: "make_cars_faster",
     description: "Evaluation on make cars faster",
@@ -184,7 +184,7 @@ curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
 #### Check Status
 ```bash
 curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
-  --header "x-api-key: $OPEN_EVAL_API_KEY"
+  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY"
 ```
 
 ### Job Status Values
@@ -199,7 +199,7 @@ curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
 ```bash
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
-  --header "x-api-key: $OPEN_EVAL_API_KEY" \
+  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
   --data "$(jq -n --rawfile script src/Evals/e_44_create_part.lua '{
     name: "create_part",
     description: "Evaluation on create part",
