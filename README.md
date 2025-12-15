@@ -41,7 +41,7 @@ pip install uv
 
 ### 3. Run Your Evaluation
 
-**Important:** You must provide your own LLM credentials (`--llm-name` and `--llm-api-key`) to run evaluations. This ensures that LLM API costs are charged to your own account.
+**Important:** You must provide your own LLM credentials (`--llm-name` and `--llm-api-key`) to run evaluations.
 
 You may save your API keys in a file named `.env`. See `.env.example` for a sample.
 
