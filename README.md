@@ -40,15 +40,21 @@ pip install uv
 ```
 
 ### 3. Run Your Evaluation
-You may save the API key generated in a file named `.env`, and name it `OPEN_GAME_EVAL_API_KEY`. See `.env.example` for a sample.
-Alternatively, you can pass in the API key directly.
+
+**Important:** You must provide your own LLM credentials (`--llm-name` and `--llm-api-key`) to run evaluations.
+
+You may save your API keys in a file named `.env`. See `.env.example` for a sample.
 
 ```bash
-# Using API key stored in .env
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
+# Run with your own LLM API key (required)
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --llm-name "claude" \
+  --llm-api-key $CLAUDE_API_KEY
 
-# Or, pass in OpenGameEval API key manually
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_GAME_EVAL_API_KEY
+# Or use environment variables (set in .env file)
+# OPEN_GAME_EVAL_API_KEY=your_open_eval_api_key
+# LLM_API_KEY=your_llm_api_key
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --llm-name "claude"
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
@@ -140,16 +146,21 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 ```bash
 uv run invoke_eval.py [OPTIONS]
 
-Options:
-  --api-key TEXT             Open Cloud API key studio-evaluation
-  --llm-name TEXT            Name of provider, e.g. claude | gemini | openai
-  --llm-api-key TEXT         LLM API key
+Required Options:
+  --api-key TEXT             Open Cloud API key studio-evaluation (or set OPEN_GAME_EVAL_API_KEY env var)
+  --llm-name TEXT            Name of provider: claude | gemini | openai (REQUIRED)
+  --llm-api-key TEXT         LLM API key (REQUIRED, or set LLM_API_KEY env var)
+  --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
+
+Optional:
   --llm-model-version TEXT   LLM model version, e.g. claude-4-sonnet-20250514
   --llm-url TEXT             LLM endpoint URL. Not yet supported, please put a placeholder string here.
   --max-concurrent INTEGER   Maximum concurrent evaluations
-  --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
-  --use-reference-mode       Use reference mode for evaluation. This is used for eval development and contribution, not for LLM assessment.
+  --use-reference-mode       Use reference mode for evaluation. This skips LLM and uses reference code for debugging eval contributions.
+  --verbose-headers          Output HTTP request and response headers for debugging
 ```
+
+> **Note:** `--llm-name` and `--llm-api-key` are required to ensure evaluations use your own LLM API key. The only exception is `--use-reference-mode`, which doesn't call an LLM.
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
@@ -174,11 +185,12 @@ Endpoint: `GET /open-eval-api/v1/eval-records/{jobId}`
 
 ### Common Issues
 
-1. **API Key Not Found**: Ensure your API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
-2. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
-3. **Timeout Errors**: Evaluations have a 10-minute timeout.
-4. **File Not Found**: Check file paths and ensure evaluation files exist.
-5. **SSL certificate verify failed**: Find the `Install Certificates.command` in finder and execute it. ([See details and other solutions](https://stackoverflow.com/questions/52805115/certificate-verify-failed-unable-to-get-local-issuer-certificate))
+1. **LLM Name/API Key Required**: You must provide `--llm-name` and `--llm-api-key` (or set `LLM_API_KEY` in `.env`). You will use your own LLM credentials for evaluations.
+2. **API Key Not Found**: Ensure your Open Game Eval API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
+3. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
+4. **Timeout Errors**: Evaluations have a 10-minute timeout.
+5. **File Not Found**: Check file paths and ensure evaluation files exist.
+6. **SSL certificate verify failed**: Find the `Install Certificates.command` in finder and execute it. ([See details and other solutions](https://stackoverflow.com/questions/52805115/certificate-verify-failed-unable-to-get-local-issuer-certificate))
 
 ## API Reference
 
@@ -189,33 +201,7 @@ https://apis.roblox.com/open-eval-api/v1
 
 ### Endpoints
 
-#### Submit Evaluation
-```bash
-curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
-  --header 'Content-Type: application/json' \
-  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
-  --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
-    name: "make_cars_faster",
-    description: "Evaluation on make cars faster",
-    input_script: $script
-  }')"
-```
-
-#### Check Status
-```bash
-curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
-  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY"
-```
-
-### Job Status Values
-- `QUEUED`: Job is waiting to be processed
-- `PENDING`: Job is being processed  
-- `COMPLETED`: Job finished successfully
-- `FAILED`: Job failed
-
-### Custom LLM Configuration
-
-#### With provider and model version
+#### Submit Evaluation with Custom LLM Configuration
 ```bash
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
@@ -232,6 +218,19 @@ curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
     }
   }')"
 ```
+
+#### Check Status
+```bash
+curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
+  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY"
+```
+
+### Job Status Values
+- `QUEUED`: Job is waiting to be processed
+- `PENDING`: Job is being processed  
+- `COMPLETED`: Job finished successfully
+- `FAILED`: Job failed
+
 Example model-versions
 - For Gemini models (provider-name: “gemini”)
     - gemini-2.5-pro
