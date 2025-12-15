@@ -14,6 +14,7 @@ import logging
 import glob
 import os
 from dotenv import load_dotenv
+import ssl
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +148,7 @@ async def main():
         "--llm-url", type=str, default="dummy_url", help="Custom LLM endpoint URL"
     )
     parser.add_argument(
-        "--llm-api-key", type=str, help="Custom LLM API key"
+        "--llm-api-key", type=str, default=None, help="Custom LLM API key"
     )
     parser.add_argument(
         "--llm-model-version", type=str, help="Custom LLM model version"
@@ -181,22 +182,30 @@ async def main():
     eval_timeout = 600
 
     # Construct custom LLM info if provided
-    custom_llm_info = None
-    if args.llm_name or args.llm_api_key or args.llm_model_version:
-        custom_llm_info = {}
-        if args.llm_name:
-            custom_llm_info["name"] = args.llm_name
+    custom_llm_info = {}
+    if not args.use_reference_mode:
+        custom_llm_info["api_key"] = args.llm_api_key or "dummy_key"
+        
+        if not args.llm_name:
+            raise ValueError("LLM name is required when not using reference mode")
+        custom_llm_info["name"] = args.llm_name
+        
+        if not args.llm_model_version:
+            raise ValueError("LLM model version is required when not using reference mode")
+        custom_llm_info["model_version"] = args.llm_model_version
+
         if args.llm_url and args.llm_url != "dummy_url":
             custom_llm_info["url"] = args.llm_url
-        if args.llm_api_key:
-            custom_llm_info["api_key"] = args.llm_api_key
-        if args.llm_model_version:
-            custom_llm_info["model_version"] = args.llm_model_version
+        else:
+            custom_llm_info["url"] = "dummy_url"
 
     # Limit concurrent evaluations if specified
     max_concurrent = args.max_concurrent or len(expanded_files)
 
-    async with aiohttp.ClientSession() as session:
+    ssl_ctx = ssl.create_default_context()
+    connector = aiohttp.TCPConnector(ssl=ssl_ctx)
+
+    async with aiohttp.ClientSession(connector=connector) as session:
         # Create semaphore to limit concurrent evaluations
         semaphore = asyncio.Semaphore(max_concurrent)
 
