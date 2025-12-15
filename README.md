@@ -147,12 +147,12 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 uv run invoke_eval.py [OPTIONS]
 
 Required Options:
+  --api-key TEXT             Open Cloud API key studio-evaluation (or set OPEN_GAME_EVAL_API_KEY env var)
   --llm-name TEXT            Name of provider: claude | gemini | openai (REQUIRED)
   --llm-api-key TEXT         LLM API key (REQUIRED, or set LLM_API_KEY env var)
   --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
 
 Optional:
-  --api-key TEXT             Open Cloud API key studio-evaluation (or set OPEN_GAME_EVAL_API_KEY env var)
   --llm-model-version TEXT   LLM model version, e.g. claude-4-sonnet-20250514
   --llm-url TEXT             LLM endpoint URL. Not yet supported, please put a placeholder string here.
   --max-concurrent INTEGER   Maximum concurrent evaluations
@@ -185,7 +185,7 @@ Endpoint: `GET /open-eval-api/v1/eval-records/{jobId}`
 
 ### Common Issues
 
-1. **LLM Name/API Key Required**: You must provide `--llm-name` and `--llm-api-key` (or set `LLM_API_KEY` in `.env`). This ensures you use your own LLM credentials for evaluations.
+1. **LLM Name/API Key Required**: You must provide `--llm-name` and `--llm-api-key` (or set `LLM_API_KEY` in `.env`). You will use your own LLM credentials for evaluations.
 2. **API Key Not Found**: Ensure your Open Game Eval API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
 3. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
 4. **Timeout Errors**: Evaluations have a 10-minute timeout.
@@ -201,33 +201,7 @@ https://apis.roblox.com/open-eval-api/v1
 
 ### Endpoints
 
-#### Submit Evaluation
-```bash
-curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
-  --header 'Content-Type: application/json' \
-  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
-  --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
-    name: "make_cars_faster",
-    description: "Evaluation on make cars faster",
-    input_script: $script
-  }')"
-```
-
-#### Check Status
-```bash
-curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
-  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY"
-```
-
-### Job Status Values
-- `QUEUED`: Job is waiting to be processed
-- `PENDING`: Job is being processed  
-- `COMPLETED`: Job finished successfully
-- `FAILED`: Job failed
-
-### Custom LLM Configuration
-
-#### With provider and model version
+#### Submit Evaluation with Custom LLM Configuration
 ```bash
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
@@ -244,6 +218,19 @@ curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
     }
   }')"
 ```
+
+#### Check Status
+```bash
+curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
+  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY"
+```
+
+### Job Status Values
+- `QUEUED`: Job is waiting to be processed
+- `PENDING`: Job is being processed  
+- `COMPLETED`: Job finished successfully
+- `FAILED`: Job failed
+
 Example model-versions
 - For Gemini models (provider-name: “gemini”)
     - gemini-2.5-pro
