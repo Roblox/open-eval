@@ -40,20 +40,25 @@ pip install uv
 ```
 
 ### 3. Run Your Evaluation
-You may save the API key generated in a file named `.env`, and name it `OPEN_GAME_EVAL_API_KEY`. See `.env.example` for a sample.
-Alternatively, you can pass in the API key directly.
+**Important:** You must provide your own LLM credentials (`--llm-name` and `--llm-api-key`) to run evaluations.
+
+You may save your API keys in a file named `.env`. See `.env.example` for a sample.
 
 ```bash
-# Using API key stored in .env
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
+# Set envvar
+export OPEN_GAME_EVAL_API_KEY=<your-open-game-eval-api-key>
+export LLM_API_KEY=<your-llm-provider-api-key>
 
-# Or, pass in OpenGameEval API key manually
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_GAME_EVAL_API_KEY
+# Pass in OpenGameEval API key and LLM API key (required)
+uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
+  --llm-name "claude" \
+  --llm-api-key $LLM_API_KEY
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
 ```bash
-Evals/001_make_cars_faster.lua                    : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/c4106612-0968-4480-90ba-e707d3bbe491
+Evals/001_make_cars_faster.lua                      : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/b7647585-5e1f-46b5-a8be-797539b65cc5
 ```
 
 It is common for an eval to take 3-4 minutes to run and gather results. The script polls result every 10 seconds and print a status update every 30 seconds.
@@ -61,7 +66,7 @@ It is common for an eval to take 3-4 minutes to run and gather results. The scri
 Once completed, it will return whether the eval run is successful or not. The default timeout is 10 minutes.
 
 ```bash
-Evals/001_make_cars_faster.lua                    : Success
+Evals/001_make_cars_faster.lua                      : Success
 Success rate: 100.00% (1/1)  
 ```
 
@@ -97,25 +102,35 @@ The eval is considered as a pass only if all checks are passed.
 **⚠️ Please beware of rate limit when running multiple evals. See "Rate Limit" section for more informaiton.**
 
 ```bash
+# Set envvar
+export OPEN_GAME_EVAL_API_KEY=<your-open-game-eval-api-key>
+export LLM_API_KEY=<your-llm-provider-api-key>
+
 # Run all evaluations
-uv run invoke_eval.py --files "Evals/*.lua"
+uv run invoke_eval.py --files "Evals/*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
 
 # Run specific pattern
-uv run invoke_eval.py --files "Evals/0*_*.lua"
+uv run invoke_eval.py --files "Evals/0*_*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
 
 # Run with concurrency limit
-uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
+uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5 --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
 ```
 
 ### Using Custom LLM Models
+Please make sure the `LLM_API_KEY` is the correct key corresponding to the model provider.
 
 ```bash
+# Set envvar
+export OPEN_GAME_EVAL_API_KEY=<your-open-game-eval-api-key>
+export GEMINI_API_KEY=<your-gemini-api-key>
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
+export OPENAI_API_KEY=<your-openai-api-key>
+
 # With Gemini
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
-  --llm-url "dummy-url" \
   --llm-name "gemini" \
-  --llm-model-version "gemini-2.5-flash-preview-09-2025" \
+  --llm-model-version "gemini-2.5-pro \
   --llm-api-key $GEMINI_API_KEY
 
 # With Claude
@@ -124,14 +139,14 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
-  --llm-api-key $CLAUDE_API_KEY
+  --llm-api-key $ANTHROPIC_API_KEY
 
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "openai" \
-  --llm-model-version "gpt-4o-2024-08-06" \
+  --llm-model-version "gpt-5" \
   --llm-api-key $OPENAI_API_KEY
 ```
 
@@ -140,16 +155,35 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 ```bash
 uv run invoke_eval.py [OPTIONS]
 
-Options:
-  --api-key TEXT             Open Cloud API key studio-evaluation
-  --llm-name TEXT            Name of provider, e.g. claude | gemini | openai
-  --llm-api-key TEXT         LLM API key
+Required Options:
+  --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
+  --api-key TEXT             Open Cloud API key studio-evaluation (or set OPEN_GAME_EVAL_API_KEY env var)
+
+Required if running evals through LLM (not using reference mode):
+  --llm-name TEXT            Name of provider: claude | gemini | openai (REQUIRED)
+  --llm-api-key TEXT         LLM API key (REQUIRED, or set LLM_API_KEY env var)
+
+Optional:
   --llm-model-version TEXT   LLM model version, e.g. claude-4-sonnet-20250514
   --llm-url TEXT             LLM endpoint URL. Not yet supported, please put a placeholder string here.
   --max-concurrent INTEGER   Maximum concurrent evaluations
-  --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
-  --use-reference-mode       Use reference mode for evaluation. This is used for eval development and contribution, not for LLM assessment.
+  --use-reference-mode       Use reference mode for evaluation. This skips LLM and uses reference code for debugging eval contributions.
+  --verbose-headers          Output HTTP request and response headers for debugging
 ```
+
+**Note:** `--llm-name` and `--llm-api-key` are required to ensure evaluations use your own LLM API key. The only exception is `--use-reference-mode`, which doesn't call an LLM.
+
+Available model-versions:
+- For Gemini models (provider-name: “gemini”)
+    - gemini-2.5-pro
+- For Claude models (provider-name: “claude”)
+    - claude-4-sonnet-20250514
+    - claude-sonnet-4-5-20250929
+    - claude-haiku-4-5-20251001
+- For OpenAI models (provider-name: “openai”)
+    - gpt-5
+    - gpt-5-mini
+    - gpt-4.1
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
@@ -174,11 +208,13 @@ Endpoint: `GET /open-eval-api/v1/eval-records/{jobId}`
 
 ### Common Issues
 
-1. **API Key Not Found**: Ensure your API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
-2. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
-3. **Timeout Errors**: Evaluations have a 10-minute timeout.
-4. **File Not Found**: Check file paths and ensure evaluation files exist.
-5. **SSL certificate verify failed**: Find the `Install Certificates.command` in finder and execute it. ([See details and other solutions](https://stackoverflow.com/questions/52805115/certificate-verify-failed-unable-to-get-local-issuer-certificate))
+1. **LLM Name/API Key Required**: You must provide `--llm-name` and `--llm-api-key` (or set `LLM_API_KEY` in `.env`). You will use your own LLM credentials for evaluations.
+2. **API Key Not Found**: Ensure your Open Game Eval API key is set in the `.env` file or passed via `--api-key`. See `.env.example` as an example.
+3. **Permission Denied**: Verify your API key has proper scope (`studio-evaluation:create`).
+4. **Timeout Errors**: Evaluations have a 10-minute timeout.
+5. **File Not Found**: Check file paths and ensure evaluation files exist.
+6. **SSL certificate verify failed**: Find the `Install Certificates.command` in finder and execute it. ([See details and other solutions](https://stackoverflow.com/questions/52805115/certificate-verify-failed-unable-to-get-local-issuer-certificate))
+7. **No output from Lua**: If the eval failed with error `Error occurred, no output from Lua`, it is caused by incorrect LLM info being passed in. Please double-check `llm-api-key` is correct, and `llm-model-version` is one of the available versions listed. 
 
 ## API Reference
 
@@ -189,15 +225,21 @@ https://apis.roblox.com/open-eval-api/v1
 
 ### Endpoints
 
-#### Submit Evaluation
+#### Submit Evaluation with Custom LLM Configuration
 ```bash
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
   --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
   --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
     name: "make_cars_faster",
-    description: "Evaluation on make cars faster",
-    input_script: $script
+    description: "Evaluation on making cars faster",
+    input_script: $script,
+    custom_llm_info: {
+      name: "provider-name", // ← Provider only, claude | gemini | openai
+      api_key: "your-provider-api-key",
+      model_version: "model-version", // ← see example model versions below
+      url: "dummy_url_not_effective",
+    }
   }')"
 ```
 
@@ -212,36 +254,6 @@ curl 'https://apis.roblox.com/open-eval-api/v1/eval-records/{job_id}' \
 - `PENDING`: Job is being processed  
 - `COMPLETED`: Job finished successfully
 - `FAILED`: Job failed
-
-### Custom LLM Configuration
-
-#### With provider and model version
-```bash
-curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
-  --header 'Content-Type: application/json' \
-  --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
-  --data "$(jq -n --rawfile script src/Evals/e_44_create_part.lua '{
-    name: "create_part",
-    description: "Evaluation on create part",
-    input_script: $script,
-    custom_llm_info: {
-      name: "provider-name", // ← Provider only, claude | gemini | openai
-      api_key: "your-provider-api-key",
-      model_version: "model-version", // ← see example model versions below
-      url: "dummy_url_not_effective",
-    }
-  }')"
-```
-Example model-versions
-- For Gemini models (provider-name: “gemini”)
-    - gemini-2.5-pro
-    - gemini-2.5-flash-preview-09-2025
-- For Claude models (provider-name: “claude”)
-    - claude-4-sonnet-20250514
-    - claude-sonnet-4-5-20250929
-- For OpenAI models (provider-name: “openai”)
-    - gpt-4o-2024-08-06
-
 
 ## Evaluation Structure
 
