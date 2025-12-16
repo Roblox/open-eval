@@ -163,15 +163,17 @@ Optional:
 
 **Note:** `--llm-name` and `--llm-api-key` are required to ensure evaluations use your own LLM API key. The only exception is `--use-reference-mode`, which doesn't call an LLM.
 
-Example model-versions
+Available model-versions:
 - For Gemini models (provider-name: “gemini”)
     - gemini-2.5-pro
-    - gemini-2.5-flash-preview-09-2025
 - For Claude models (provider-name: “claude”)
     - claude-4-sonnet-20250514
     - claude-sonnet-4-5-20250929
+    - claude-haiku-4-5
 - For OpenAI models (provider-name: “openai”)
-    - gpt-4o-2024-08-06
+    - gpt-5
+    - gpt-5-mini
+    - gpt-4-1
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
