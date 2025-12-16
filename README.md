@@ -122,7 +122,7 @@ uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "gemini" \
-  --llm-model-version "gemini-2.5-flash-preview-09-2025" \
+  --llm-model-version "gemini-2.5-pro \
   --llm-api-key $LLM_API_KEY
 
 # With Claude
@@ -138,7 +138,7 @@ uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "openai" \
-  --llm-model-version "gpt-4o-2024-08-06" \
+  --llm-model-version "gpt-5" \
   --llm-api-key $LLM_API_KEY
 ```
 
