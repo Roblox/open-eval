@@ -196,6 +196,14 @@ async def main():
         
         if not args.llm_model_version:
             warnings.warn("LLM model version is not provided when not using reference mode. Will be using the default model version for the provider.")
+            if args.llm_name == "claude":
+                custom_llm_info["model_version"] = "claude-sonnet-4-5-20250929"
+            elif args.llm_name == "gemini":
+                custom_llm_info["model_version"] = "gemini-2.5-pro"
+            elif args.llm_name == "openai":
+                custom_llm_info["model_version"] = "gpt-5"
+            else:
+                raise ValueError(f"Provider not supported: {args.llm_name}")
         else:
             custom_llm_info["model_version"] = args.llm_model_version
 
