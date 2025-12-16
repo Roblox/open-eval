@@ -44,16 +44,18 @@ You may save the API key generated in a file named `.env`, and name it `OPEN_GAM
 Alternatively, you can pass in the API key directly.
 
 ```bash
-# Using API key stored in .env
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua"
-
-# Or, pass in OpenGameEval API key manually
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" --api-key $OPEN_GAME_EVAL_API_KEY
+# Pass in OpenGameEval API key manually
+uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
+  --llm-name "claude" \
+  --llm-model-version "claude-sonnet-4-5-20250929" \
+  --llm-api-key $LLM_API_KEY \
+  --llm-url "dummy_url"
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
 ```bash
-Evals/001_make_cars_faster.lua                    : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/c4106612-0968-4480-90ba-e707d3bbe491
+Evals/022_add_world_time.lua                      : Submitted - https://apis.roblox.com/open-eval-api/v1/eval-records/b7647585-5e1f-46b5-a8be-797539b65cc5
 ```
 
 It is common for an eval to take 3-4 minutes to run and gather results. The script polls result every 10 seconds and print a status update every 30 seconds.
@@ -61,7 +63,7 @@ It is common for an eval to take 3-4 minutes to run and gather results. The scri
 Once completed, it will return whether the eval run is successful or not. The default timeout is 10 minutes.
 
 ```bash
-Evals/001_make_cars_faster.lua                    : Success
+Evals/022_add_world_time.lua                      : Success
 Success rate: 100.00% (1/1)  
 ```
 
@@ -108,31 +110,32 @@ uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5
 ```
 
 ### Using Custom LLM Models
+Please make sure the `LLM_API_KEY` is the correct key corresponding to the model provider.
 
 ```bash
 # With Gemini
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "gemini" \
   --llm-model-version "gemini-2.5-flash-preview-09-2025" \
-  --llm-api-key $GEMINI_API_KEY
+  --llm-api-key $LLM_API_KEY
 
 # With Claude
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
-  --llm-api-key $CLAUDE_API_KEY
+  --llm-api-key $LLM_API_KEY
 
 # With OpenAI
-uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-4o-2024-08-06" \
-  --llm-api-key $OPENAI_API_KEY
+  --llm-api-key $LLM_API_KEY
 ```
 
 ## Command Line Options
@@ -194,9 +197,9 @@ https://apis.roblox.com/open-eval-api/v1
 curl -X POST 'https://apis.roblox.com/open-eval-api/v1/eval' \
   --header 'Content-Type: application/json' \
   --header "x-api-key: $OPEN_GAME_EVAL_API_KEY" \
-  --data "$(jq -n --rawfile script Evals/001_make_cars_faster.lua '{
-    name: "make_cars_faster",
-    description: "Evaluation on make cars faster",
+  --data "$(jq -n --rawfile script Evals/022_add_world_time.lua '{
+    name: "add_world_time",
+    description: "Evaluation on adding world time",
     input_script: $script
   }')"
 ```
