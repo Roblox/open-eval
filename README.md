@@ -45,11 +45,11 @@ pip install uv
 You may save your API keys in a file named `.env`. See `.env.example` for a sample.
 
 ```bash
-# Pass in OpenGameEval API key manually
-# Run with your own LLM API key (required)
+# Pass in OpenGameEval API key and LLM API key (required)
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
+  --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-name "claude" \
-  --llm-api-key $CLAUDE_API_KEY
+  --llm-api-key $LLM_API_KEY
 
 # Or use environment variables (set in .env file)
 # OPEN_GAME_EVAL_API_KEY=your_open_eval_api_key
@@ -147,9 +147,11 @@ uv run invoke_eval.py --files "Evals/022_add_world_time.lua" \
 ```bash
 uv run invoke_eval.py [OPTIONS]
 
-Required Options (If not using reference mode):
+Required Options:
   --files TEXT [TEXT ...]    Lua files to evaluate (supports wildcards)
   --api-key TEXT             Open Cloud API key studio-evaluation (or set OPEN_GAME_EVAL_API_KEY env var)
+
+Required if running evals through LLM (not using reference mode):
   --llm-name TEXT            Name of provider: claude | gemini | openai (REQUIRED)
   --llm-api-key TEXT         LLM API key (REQUIRED, or set LLM_API_KEY env var)
 
