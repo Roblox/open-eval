@@ -15,6 +15,7 @@ import glob
 import os
 from dotenv import load_dotenv
 import ssl
+import warnings
 
 logger = logging.getLogger(__name__)
 
@@ -184,15 +185,19 @@ async def main():
     # Construct custom LLM info if provided
     custom_llm_info = {}
     if not args.use_reference_mode:
-        custom_llm_info["api_key"] = args.llm_api_key or "dummy_key"
+        llm_api_key = args.llm_api_key or os.getenv("LLM_API_KEY", "")
+        if not llm_api_key:
+            raise ValueError("LLM API key is required when not using reference mode. Provide --llm-api-key or set LLM_API_KEY in .env file.\n This ensures you use your own LLM API key for evaluations.")
+        custom_llm_info["api_key"] = llm_api_key
         
         if not args.llm_name:
-            raise ValueError("LLM name is required when not using reference mode")
+            raise ValueError("LLM name is required when not using reference mode. Provide --llm-name (e.g., 'claude', 'gemini', 'openai').\n This ensures you use your own LLM API key for evaluations.")
         custom_llm_info["name"] = args.llm_name
         
         if not args.llm_model_version:
-            raise ValueError("LLM model version is required when not using reference mode")
-        custom_llm_info["model_version"] = args.llm_model_version
+            warnings.warn("LLM model version is not provided when not using reference mode. Will be using the default model version for the provider.")
+        else:
+            custom_llm_info["model_version"] = args.llm_model_version
 
         if args.llm_url and args.llm_url != "dummy_url":
             custom_llm_info["url"] = args.llm_url
