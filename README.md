@@ -169,11 +169,11 @@ Available model-versions:
 - For Claude models (provider-name: “claude”)
     - claude-4-sonnet-20250514
     - claude-sonnet-4-5-20250929
-    - claude-haiku-4-5
+    - claude-haiku-4-5-20251001
 - For OpenAI models (provider-name: “openai”)
     - gpt-5
     - gpt-5-mini
-    - gpt-4-1
+    - gpt-4.1
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
