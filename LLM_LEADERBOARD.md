@@ -32,13 +32,13 @@
         <td>24.88%</td>
         <td>5.99%</td>
     </tr>
-    <tr>
+    <tr> ,,,
         <td class="model-name">Gemini 3 Flash</td>
-        <td><strong>55.53%</strong></td>
-        <td><strong>69.17%</strong></td>
-        <td><strong>58.21%</strong></td>
-        <td><strong>37.79%</strong></td>
-        <td>12.74%</td>
+        <td><strong>54.68%</strong></td>
+        <td><strong>65.73%</strong></td>
+        <td><strong>56.99%</strong></td>
+        <td><strong>39.98%</strong></td>
+        <td>2.17%</td>
     </tr>
     <tr>
         <td class="model-name">Gemini 2.5 Flash</td>
