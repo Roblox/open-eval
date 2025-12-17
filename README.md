@@ -2,6 +2,11 @@
 
 OpenGameEval is an evaluation framework for testing LLMs on Roblox game development tasks. This repository contains open-sourced evaluation scripts and tools for running automated assessments in the Roblox Studio environment.
 
+## LLM Leaderboard
+
+The LLM Leaderboard summarizes benchmark results and progress for all evaluated Large Language Models in this repository.
+[LLM_LEADERBOARD.md](./LLM_LEADERBOARD.md)
+
 ## Prerequisites
 
 ### 1. Roblox Account
@@ -47,13 +52,13 @@ You may save your API keys in a file named `.env`. See `.env.example` for a samp
 ```bash
 # Set envvar
 export OPEN_GAME_EVAL_API_KEY=<your-open-game-eval-api-key>
-export LLM_API_KEY=<your-llm-provider-api-key>
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
 
 # Pass in OpenGameEval API key and LLM API key (required)
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-name "claude" \
-  --llm-api-key $LLM_API_KEY
+  --llm-api-key $ANTHROPIC_API_KEY
 ```
 
 It should show the status being "submitted" with a url, through which you can check the status of the eval with the Roblox account that owns the API key logged in. 
@@ -104,16 +109,16 @@ The eval is considered as a pass only if all checks are passed.
 ```bash
 # Set envvar
 export OPEN_GAME_EVAL_API_KEY=<your-open-game-eval-api-key>
-export LLM_API_KEY=<your-llm-provider-api-key>
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
 
 # Run all evaluations
-uv run invoke_eval.py --files "Evals/*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
+uv run invoke_eval.py --files "Evals/*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $ANTHROPIC_API_KEY
 
 # Run specific pattern
-uv run invoke_eval.py --files "Evals/0*_*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
+uv run invoke_eval.py --files "Evals/0*_*.lua" --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $ANTHROPIC_API_KEY
 
 # Run with concurrency limit
-uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5 --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $LLM_API_KEY
+uv run invoke_eval.py --files "Evals/*.lua" --max-concurrent 5 --api-key $OPEN_GAME_EVAL_API_KEY --llm-name "claude" --llm-api-key $ANTHROPIC_API_KEY
 ```
 
 ### Using Custom LLM Models
@@ -130,7 +135,7 @@ export OPENAI_API_KEY=<your-openai-api-key>
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-name "gemini" \
-  --llm-model-version "gemini-2.5-pro \
+  --llm-model-version "gemini-2.5-pro" \
   --llm-api-key $GEMINI_API_KEY
 
 # With Claude
@@ -310,8 +315,3 @@ This project is part of Roblox's open-source initiative. Please refer to the rep
 
 ## Support
 - Contact the Roblox team for API access and permissions
-
-## LLM Leaderboard
-
-The LLM Leaderboard summarizes benchmark results and progress for all evaluated Large Language Models in this repository.
-[LLM_LEADERBOARD.md](./LLM_LEADERBOARD.md)
