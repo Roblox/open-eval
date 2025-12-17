@@ -113,6 +113,14 @@
         <td>3.75%</td>
     </tr>
     <tr>
+        <td class="model-name">GPT-5.1</td>
+        <td>24.89%/td>
+        <td>39.38%</td>
+        <td>23.41%</td>
+        <td>16.01%</td>
+        <td>23.84%</td>
+    </tr>
+    <tr>
         <td class="model-name">GPT-OSS-120B</td>
         <td>29.79%</td>
         <td>46.81%</td>
