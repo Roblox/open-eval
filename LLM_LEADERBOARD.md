@@ -33,6 +33,14 @@
         <td>5.99%</td>
     </tr>
     <tr>
+        <td class="model-name">Gemini 3 Flash</td>
+        <td>55.53%</td>
+        <td>69.17%</td>
+        <td>58.21%</td>
+        <td>37.79%</td>
+        <td>12.74%</td>
+    </tr>
+    <tr>
         <td class="model-name">Gemini 2.5 Flash</td>
         <td>23.40%</td>
         <td>40.43%</td>
