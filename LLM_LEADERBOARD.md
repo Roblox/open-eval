@@ -113,6 +113,14 @@
         <td>3.75%</td>
     </tr>
     <tr>
+        <td class="model-name">GPT-5.2</td>
+        <td>30.64%</td>
+        <td>46.08%</td>
+        <td>29.52%</td>
+        <td>19.69%</td>
+        <td>2.33%</td>
+    </tr>
+    <tr>
         <td class="model-name">GPT-5.1</td>
         <td>31.06%</td>
         <td>42.55%</td>
