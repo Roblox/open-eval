@@ -18,10 +18,10 @@
 <tbody>
     <tr>
         <td class="model-name">Gemini 3 Pro</td>
-        <td><strong>48.94%</strong></td>
-        <td><strong>59.41%</strong></td>
-        <td><strong>49.66%</strong></td>
-        <td><strong>37.82%</strong></td>
+        <td>48.94%</td>
+        <td>59.41%</td>
+        <td>49.66%</td>
+        <td>37.82%</td>
         <td>3.09%</td>
     </tr>
     <tr>
@@ -34,10 +34,10 @@
     </tr>
     <tr>
         <td class="model-name">Gemini 3 Flash</td>
-        <td>55.53%</td>
-        <td>69.17%</td>
-        <td>58.21%</td>
-        <td>37.79%</td>
+        <td><strong>55.53%</strong></td>
+        <td><strong>69.17%</strong></td>
+        <td><strong>58.21%</strong></td>
+        <td><strong>37.79%</strong></td>
         <td>12.74%</td>
     </tr>
     <tr>
