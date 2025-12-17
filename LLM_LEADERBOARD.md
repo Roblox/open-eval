@@ -73,6 +73,22 @@
         <td>2.94%</td>
     </tr>
     <tr>
+        <td class="model-name">GPT-5.2</td>
+        <td>30.64%</td>
+        <td>46.08%</td>
+        <td>29.52%</td>
+        <td>19.69%</td>
+        <td>2.33%</td>
+    </tr>
+    <tr>
+        <td class="model-name">GPT-5.1</td>
+        <td>31.06%</td>
+        <td>42.55%</td>
+        <td>31.67%</td>
+        <td>20.88%</td>
+        <td>3.48%</td>
+    </tr>
+    <tr>
         <td class="model-name">GLM 4.5</td>
         <td>40.43%</td>
         <td>53.19%</td>
@@ -111,22 +127,6 @@
         <td>23.77%</td>
         <td>13.30%</td>
         <td>3.75%</td>
-    </tr>
-    <tr>
-        <td class="model-name">GPT-5.2</td>
-        <td>30.64%</td>
-        <td>46.08%</td>
-        <td>29.52%</td>
-        <td>19.69%</td>
-        <td>2.33%</td>
-    </tr>
-    <tr>
-        <td class="model-name">GPT-5.1</td>
-        <td>31.06%</td>
-        <td>42.55%</td>
-        <td>31.67%</td>
-        <td>20.88%</td>
-        <td>3.48%</td>
     </tr>
     <tr>
         <td class="model-name">GPT-OSS-120B</td>
