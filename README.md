@@ -186,7 +186,6 @@ Available model-versions:
 - For OpenAI models (provider-name: “openai”)
     - gpt-5
     - gpt-5-mini
-    - gpt-4.1
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
