@@ -141,7 +141,6 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 # With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
-  --llm-url "dummy-url" \
   --llm-name "claude" \
   --llm-model-version "claude-4-sonnet-20250514" \
   --llm-api-key $ANTHROPIC_API_KEY
@@ -149,7 +148,6 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
-  --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-5" \
   --llm-api-key $OPENAI_API_KEY
