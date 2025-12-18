@@ -142,7 +142,7 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
   --llm-name "claude" \
-  --llm-model-version "claude-4-sonnet-20250514" \
+  --llm-model-version "claude-sonnet-4-5-20250929" \
   --llm-api-key $ANTHROPIC_API_KEY
 
 # With OpenAI

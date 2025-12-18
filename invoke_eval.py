@@ -180,7 +180,7 @@ async def main():
 
     base_url = BASE_URL
     poll_interval = 10
-    eval_timeout = 600
+    eval_timeout = 900
 
     # Construct custom LLM info if provided
     custom_llm_info = {}
