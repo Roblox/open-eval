@@ -141,15 +141,13 @@ uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
 # With Claude
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
-  --llm-url "dummy-url" \
   --llm-name "claude" \
-  --llm-model-version "claude-4-sonnet-20250514" \
+  --llm-model-version "claude-sonnet-4-5-20250929" \
   --llm-api-key $ANTHROPIC_API_KEY
 
 # With OpenAI
 uv run invoke_eval.py --files "Evals/001_make_cars_faster.lua" \
   --api-key $OPEN_GAME_EVAL_API_KEY \
-  --llm-url "dummy-url" \
   --llm-name "openai" \
   --llm-model-version "gpt-5" \
   --llm-api-key $OPENAI_API_KEY
@@ -188,7 +186,6 @@ Available model-versions:
 - For OpenAI models (provider-name: “openai”)
     - gpt-5
     - gpt-5-mini
-    - gpt-4.1
 
 ## API Rate Limit
 To ensure the stability of public API, we implement rate limiting. Exceeding these limits will result in an `429 Too Many Requests status` code.
