@@ -18,10 +18,10 @@
 <tbody>
     <tr>
         <td class="model-name">Gemini 3 Pro</td>
-        <td><strong>48.94%</strong></td>
-        <td><strong>59.41%</strong></td>
-        <td><strong>49.66%</strong></td>
-        <td><strong>37.82%</strong></td>
+        <td>48.94%</td>
+        <td>59.41%</td>
+        <td>49.66%</td>
+        <td>37.82%</td>
         <td>3.09%</td>
     </tr>
     <tr>
@@ -31,6 +31,14 @@
         <td>38.92%</td>
         <td>24.88%</td>
         <td>5.99%</td>
+    </tr>
+    <tr> ,,,
+        <td class="model-name">Gemini 3 Flash</td>
+        <td><strong>54.68%</strong></td>
+        <td><strong>65.73%</strong></td>
+        <td><strong>56.99%</strong></td>
+        <td><strong>39.98%</strong></td>
+        <td>2.17%</td>
     </tr>
     <tr>
         <td class="model-name">Gemini 2.5 Flash</td>
@@ -63,6 +71,22 @@
         <td>36.20%</td>
         <td>25.46%</td>
         <td>2.94%</td>
+    </tr>
+    <tr>
+        <td class="model-name">GPT-5.2</td>
+        <td>30.64%</td>
+        <td>46.08%</td>
+        <td>29.52%</td>
+        <td>19.69%</td>
+        <td>2.33%</td>
+    </tr>
+    <tr>
+        <td class="model-name">GPT-5.1</td>
+        <td>31.06%</td>
+        <td>42.55%</td>
+        <td>31.67%</td>
+        <td>20.88%</td>
+        <td>3.48%</td>
     </tr>
     <tr>
         <td class="model-name">GLM 4.5</td>
